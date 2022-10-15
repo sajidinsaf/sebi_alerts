@@ -8,10 +8,12 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-    String fileName = Main.class.getClassLoader().getResource("sample-visitor-record.csv").getFile();
+    String fileName = null;
 
     if (args != null && args.length > 0) {
       fileName = args[0];
+    } else {
+      fileName = Main.class.getClassLoader().getResource("sample-visitor-record.csv").getFile();
     }
     File file = new File(fileName);
 
