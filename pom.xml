@@ -5,7 +5,10 @@
   <version>1.0.0</version>
   <name>sebi_alerts</name>
   <description>Alerts management software for SEBI</description>
-  
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
   <dependencies>
     <!-- https://mvnrepository.com/artifact/junit/junit -->
 	<dependency>
