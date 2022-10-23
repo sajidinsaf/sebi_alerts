@@ -2,8 +2,8 @@ package com.visibleai.sebi.report.builder;
 
 import org.apache.commons.csv.CSVRecord;
 
-public interface Builder {
+public interface ReportBuilder {
 
-  public void builder(CSVRecord csvRecord);
+  public void build(CSVRecord csvRecord);
 
 }
