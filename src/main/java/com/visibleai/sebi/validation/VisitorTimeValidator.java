@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class VisitorTimeValidator {
     public boolean isOutOfWorkingHours(String dayIn) throws ParseException {
@@ -17,8 +16,6 @@ public class VisitorTimeValidator {
         calendar.setTime(date);
 
         int dayOfTheWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
-        List list = null;
 
         if (dayOfTheWeek == 1 || dayOfTheWeek == 7) {
             return true;

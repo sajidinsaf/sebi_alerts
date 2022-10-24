@@ -9,6 +9,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.validation.AccessCardValidator;
 import com.visibleai.sebi.validation.VisitorTimeValidator;
 
@@ -41,6 +42,8 @@ public class Main {
         // For each CSV record do the validations
         for (int i = 0; i < csvRecords.size(); i++) {
             CSVRecord csvRecord = csvRecords.get(i);
+
+            VisitorEntry visitorEntry = new VisitorEntry(csvRecord);
 
             String accessCardId = csvRecord.get(6);
             String dayIn = csvRecord.get(10);
