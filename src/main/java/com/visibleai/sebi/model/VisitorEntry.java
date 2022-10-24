@@ -212,4 +212,14 @@ public class VisitorEntry {
         this.assets = assets;
     }
 
+    @Override
+    public String toString() {
+        return "VisitorEntry [idProof=" + idProof + ", location=" + location + ", division=" + division
+                + ", department=" + department + ", visitorName=" + visitorName + ", visitorNumber=" + visitorNumber
+                + ", accessCardId=" + accessCardId + ", visitorCompany=" + visitorCompany + ", toMeet=" + toMeet
+                + ", remarks=" + remarks + ", timeIn=" + timeIn + ", timeOut=" + timeOut + ", visitDuration="
+                + visitDuration + ", loggedOut=" + loggedOut + ", hostL=" + hostL + ", passId=" + passId + ", authBy="
+                + authBy + ", questions=" + questions + ", typeOfVistor=" + typeOfVistor + ", assets=" + assets + "]";
+    }
+
 }
