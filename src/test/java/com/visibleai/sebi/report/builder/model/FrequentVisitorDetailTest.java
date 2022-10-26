@@ -13,11 +13,17 @@ public class FrequentVisitorDetailTest {
         VisitorEntry visitorEntry = new VisitorEntry();
 
         String visitorNumber = "1234567890";
+        visitorEntry.setVisitorNumber(visitorNumber);
         String visitorName = "Ting Tong";
+        visitorEntry.setVisitorName(visitorName);
         String toMeet = "Bing Bong";
+        visitorEntry.setToMeet(toMeet);
         String timeIn = "22 Jan 2022 10:20am";
+        visitorEntry.setTimeIn(timeIn);
         String visitorCompany = "ICICI Bank";
+        visitorEntry.setVisitorCompany(visitorCompany);
         String accessCardId = "A-674/P";
+        visitorEntry.setAccessCardId(accessCardId);
 
         FrequentVisitorDetail frequentVisitorDetail = new FrequentVisitorDetail(visitorEntry);
 
