@@ -24,7 +24,7 @@ public class VisitorTimeValidator {
         int hourOfTheDay = calendar.get(Calendar.HOUR_OF_DAY);
         int minuteOfTheHour = calendar.get(Calendar.MINUTE);
 
-        if (hourOfTheDay < 9 || hourOfTheDay > 17 || (hourOfTheDay == 17 && minuteOfTheHour > 0)) {
+        if (hourOfTheDay < 8 || (hourOfTheDay == 8 && minuteOfTheHour < 30) || hourOfTheDay > 19) {
             return true;
         }
 
