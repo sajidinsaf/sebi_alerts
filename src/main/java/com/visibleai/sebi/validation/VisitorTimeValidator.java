@@ -5,9 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.visibleai.sebi.model.Constants;
+
 public class VisitorTimeValidator {
     public boolean isOutOfWorkingHours(String dayIn) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy hh:mma");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
 
         Date date = simpleDateFormat.parse(dayIn);
 

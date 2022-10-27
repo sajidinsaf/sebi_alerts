@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Report;
 import com.visibleai.sebi.report.SebiAlertsReport;
@@ -34,8 +35,8 @@ public class OutOfOfficeHoursReportBuilder implements ReportBuilder {
                 return;
             }
         } catch (ParseException e) {
-            System.out.println(
-                    "Invalid Date Time Format. Expected format 'dd MMM yyyy hh:mma'. Visitor entry: " + visitorEntry);
+            System.out.println("Invalid Date Time Format. Expected format "
+                    + Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT + ". Visitor entry: " + visitorEntry);
             return;
         }
         String name = visitorEntry.getVisitorName();

@@ -11,6 +11,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.report.builder.model.FrequentVisitorDetail;
 
 public class VisitFrequencyCheckTest {
@@ -21,7 +22,6 @@ public class VisitFrequencyCheckTest {
         int period = 7;
         VisitFrequencyCheck visitFrequencyCheck = new VisitFrequencyCheck(period);
 
-        // dd MMM yyyy hh:mma
         FrequentVisitorDetail visitBetweenPeriodStartAndEndDate = new FrequentVisitorDetail();
 
         Date todaysDate = new Date();
@@ -29,7 +29,7 @@ public class VisitFrequencyCheckTest {
         numberOfDaysAgo.setTime(todaysDate);
         numberOfDaysAgo.add(Calendar.DATE, -period + 3);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy hh:mma");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
 
         String dateOfVisitBetweenPeriodStartAndEndDate = simpleDateFormat.format(numberOfDaysAgo.getTime());
 
