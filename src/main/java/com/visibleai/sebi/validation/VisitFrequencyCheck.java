@@ -1,4 +1,4 @@
-package com.visibleai.sebi.report.builder;
+package com.visibleai.sebi.validation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

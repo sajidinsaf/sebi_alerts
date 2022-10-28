@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.report.builder.model.FrequentVisitorDetail;
+import com.visibleai.sebi.validation.VisitFrequencyCheck;
 
 public class VisitFrequencyCheckTest {
 
