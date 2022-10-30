@@ -48,9 +48,9 @@ public class ListCheckReportBuilderTest {
         assertEquals("Visitor Company", header.get(0));
         assertEquals("Name", header.get(1));
         assertEquals("Phone Number", header.get(2));
-        assertEquals("Meeting", header.get(3));
+        assertEquals("Meeting with", header.get(3));
         assertEquals("Date", header.get(4));
-        assertEquals("Access Card ID", header.get(5));
+        assertEquals("Type of visitor", header.get(5));
         assertEquals("Comments", header.get(6));
 
         List<List<String>> rows = listCheckReportData.getRows();
@@ -58,12 +58,12 @@ public class ListCheckReportBuilderTest {
 
         List<String> row = rows.get(0);
         assertEquals("ICICI Bank", row.get(0));
-        assertEquals("Tom Cruise", row.get(0));
-        assertEquals("1234567890", row.get(1));
-        assertEquals("Matt Damon", row.get(2));
-        assertEquals("20 Oct 2022 10:30am", row.get(3));
-        assertEquals("V-174", row.get(4));
-        assertEquals("", row.get(5));
+        assertEquals("Tom Cruise", row.get(1));
+        assertEquals("1234567890", row.get(2));
+        assertEquals("Matt Damon", row.get(3));
+        assertEquals("20 Oct 2022 10:30am", row.get(4));
+        assertEquals("V-174", row.get(5));
+        assertEquals("", row.get(6));
 
         Date date = listCheckReport.getDate();
         Date today = new Date();
