@@ -92,6 +92,7 @@ public class VisitFrequencyReportBuilder implements ReportBuilder {
         }
         visitFrequencyReport.setReportData(visitFrequencyReportData);
         return visitFrequencyReport;
+
     }
 
 }
