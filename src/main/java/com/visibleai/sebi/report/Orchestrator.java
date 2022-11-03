@@ -1,51 +1,77 @@
 package com.visibleai.sebi.report;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 
-import com.visibleai.sebi.model.Constants;
-import com.visibleai.sebi.report.builder.ListCheckReportBuilder;
-import com.visibleai.sebi.report.builder.MediaVisitorReportBuilder;
-import com.visibleai.sebi.report.builder.OutOfOfficeHoursReportBuilder;
-import com.visibleai.sebi.report.builder.VisitFrequencyReportBuilder;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
+import com.visibleai.sebi.Main;
+import com.visibleai.sebi.model.VisitorEntry;
+import com.visibleai.sebi.report.builder.ReportBuilder;
+import com.visibleai.sebi.report.printer.ReportPrinter;
+import com.visibleai.sebi.report.printer.SebiAlertsReportPrinter;
 
 public class Orchestrator {
-    private ListCheckReportBuilder brokerListCheckReportBuilder;
-    private ListCheckReportBuilder govtListCheckReportBuilder;
-    private ListCheckReportBuilder employeesListCheckReportBuilder;
-    private MediaVisitorReportBuilder mediaVisitorReportBuilder;
-    private OutOfOfficeHoursReportBuilder outOfOfficeHoursReportBuilder;
-    private VisitFrequencyReportBuilder weekVisitFrequencyReportBuilder;
-    private VisitFrequencyReportBuilder twoWeekVisitFrequencyReportBuilder;
-    private VisitFrequencyReportBuilder monthvisitFrequencyReportBuilder;
+
+    private List<ReportBuilder> reportBuilders;
+
+    private ReportPrinter reportPrinter;
 
     public Orchestrator() {
-        brokerListCheckReportBuilder = new ListCheckReportBuilder(loadListFromFile(Constants.BROKERS_LIST_FILE),
-                "Broker Visitor Report");
-        govtListCheckReportBuilder = new ListCheckReportBuilder(loadListFromFile(Constants.GOVT_ORGS_FILE),
-                "Government Visitor Report");
-        employeesListCheckReportBuilder = new ListCheckReportBuilder(
-                loadListFromFile(Constants.EMPLOYEE_WATCH_LIST_FILE), "Employees Watch List Report");
-        mediaVisitorReportBuilder = new MediaVisitorReportBuilder();
-        outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder();
-        weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3);
-        twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6);
-        monthvisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9);
+
+        reportBuilders = new ReportBuilderFactory().createReportBuilders();
+        reportPrinter = new SebiAlertsReportPrinter();
 
     }
 
-    private List<String> loadListFromFile(String fileName) {
-        try {
-            List<String> list = Files.readAllLines(new File(fileName).toPath(), Charset.defaultCharset());
-            return list;
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    public void generateReports() throws IOException {
+
+        String fileName = null;
+
+        // If the file name is sent in the args then use that file name
+//        if (args != null && args.length > 0) {
+//            fileName = args[0];
+//        } else {
+        // otherwise use the file name from the resourcs package
+        fileName = Main.class.getClassLoader().getResource("sample-visitor-record-1000.csv").getFile();
+        // }
+
+        // create an instance of the file
+        File file = new File(fileName);
+
+        // create a reader for this file
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        // Parse the file using the apache CSV library
+        CSVParser parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
+
+        // Get the list of CSV records
+        List<CSVRecord> csvRecords = parser.getRecords();
+
+        // For each CSV record do the validations
+        for (int i = 0; i < csvRecords.size(); i++) {
+            CSVRecord csvRecord = csvRecords.get(i);
+
+            VisitorEntry visitorEntry = new VisitorEntry(csvRecord);
+
+            for (ReportBuilder reportBuilder : reportBuilders) {
+                reportBuilder.build(visitorEntry);
+            }
+
         }
-        return new ArrayList<String>();
+
+        for (ReportBuilder reportBuilder : reportBuilders) {
+            Report report = reportBuilder.getReport();
+            System.out.println();
+            System.out.println();
+            reportPrinter.print(report);
+        }
+
     }
+
 }

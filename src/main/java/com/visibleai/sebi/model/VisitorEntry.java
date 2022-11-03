@@ -30,6 +30,7 @@ public class VisitorEntry {
     }
 
     public VisitorEntry(CSVRecord csvRecord) {
+        // System.out.println(csvRecord);
         idProof = csvRecord.get(0);
         location = csvRecord.get(1);
         division = csvRecord.get(2);
