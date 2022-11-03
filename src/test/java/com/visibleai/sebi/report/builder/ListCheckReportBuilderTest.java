@@ -12,15 +12,19 @@ import org.junit.Test;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Report;
 import com.visibleai.sebi.report.ReportData;
+import com.visibleai.sebi.validation.CompanyMatchValidator;
+import com.visibleai.sebi.validation.ListCheckValidator;
 
 public class ListCheckReportBuilderTest {
 
     @Test
-    public void testListCheckReportBuilder() {
+    public void testCompanyMatchReportBuilder() {
         List<String> checkList = Arrays.asList("ICICI Bank", "HDFC", "Bank Of India", "HDFC", "Axis Direct",
                 "Paytm Money");
         String reportTitle = "List Check Report";
-        ListCheckReportBuilder listCheckReportBuilder = new ListCheckReportBuilder(checkList, reportTitle);
+
+        ListCheckValidator companyMatchValidator = new CompanyMatchValidator(checkList);
+        ListCheckReportBuilder listCheckReportBuilder = new ListCheckReportBuilder(companyMatchValidator, reportTitle);
 
         VisitorEntry isVisitorCompanyEntry = new VisitorEntry();
         isVisitorCompanyEntry.setVisitorCompany("ICICI Bank");

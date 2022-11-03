@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.visibleai.sebi.model.VisitorEntry;
 
-public class ListCheckValidator {
+public abstract class ListCheckValidator {
 
     private List<String> checkList;
 
@@ -13,8 +13,10 @@ public class ListCheckValidator {
     }
 
     public boolean isInList(VisitorEntry visitorEntry) {
-        String visitorCompany = visitorEntry.getVisitorCompany();
-        boolean result = checkList.stream().anyMatch(visitorCompany::equalsIgnoreCase);
+        String valueToCheck = getValueToCheck(visitorEntry);
+        boolean result = checkList.stream().anyMatch(valueToCheck::equalsIgnoreCase);
         return result;
     }
+
+    protected abstract String getValueToCheck(VisitorEntry visitorEntry);
 }

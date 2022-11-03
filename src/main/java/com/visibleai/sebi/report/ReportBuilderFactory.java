@@ -14,6 +14,9 @@ import com.visibleai.sebi.report.builder.MediaVisitorReportBuilder;
 import com.visibleai.sebi.report.builder.OutOfOfficeHoursReportBuilder;
 import com.visibleai.sebi.report.builder.ReportBuilder;
 import com.visibleai.sebi.report.builder.VisitFrequencyReportBuilder;
+import com.visibleai.sebi.validation.CompanyMatchValidator;
+import com.visibleai.sebi.validation.EmployeeMatchValidator;
+import com.visibleai.sebi.validation.ListCheckValidator;
 
 public class ReportBuilderFactory {
 
@@ -27,12 +30,18 @@ public class ReportBuilderFactory {
         ReportBuilder twoWeekVisitFrequencyReportBuilder;
         ReportBuilder monthvisitFrequencyReportBuilder;
 
-        brokerListCheckReportBuilder = new ListCheckReportBuilder(loadListFromFile(Constants.BROKERS_LIST_FILE),
-                "Broker Visitor Report");
-        govtListCheckReportBuilder = new ListCheckReportBuilder(loadListFromFile(Constants.GOVT_ORGS_FILE),
-                "Government Visitor Report");
-        employeesListCheckReportBuilder = new ListCheckReportBuilder(
-                loadListFromFile(Constants.EMPLOYEE_WATCH_LIST_FILE), "Employees Watch List Report");
+        ListCheckValidator brokerCompanyMatchValidator = new CompanyMatchValidator(
+                loadListFromFile(Constants.BROKERS_LIST_FILE));
+        ListCheckValidator govtOrgMatchValidator = new CompanyMatchValidator(
+                loadListFromFile(Constants.GOVT_ORGS_FILE));
+        ListCheckValidator employeeMatchValidator = new EmployeeMatchValidator(
+                loadListFromFile(Constants.EMPLOYEE_WATCH_LIST_FILE));
+
+        brokerListCheckReportBuilder = new ListCheckReportBuilder(brokerCompanyMatchValidator, "Broker Visitor Report");
+        govtListCheckReportBuilder = new ListCheckReportBuilder(govtOrgMatchValidator, "Government Visitor Report");
+        employeesListCheckReportBuilder = new ListCheckReportBuilder(employeeMatchValidator,
+                "Employees Watch List Report");
+
         mediaVisitorReportBuilder = new MediaVisitorReportBuilder();
         outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder();
         weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3);

@@ -13,11 +13,13 @@ import com.visibleai.sebi.validation.ListCheckValidator;
 public class ListCheckReportBuilder implements ReportBuilder {
 
     private ListCheckValidator listCheckValidator;
+
     private SebiAlertsReport listCheckReport;
     private TableReportData listCheckReportData;
 
-    public ListCheckReportBuilder(List<String> checkList, String reportTitle) {
-        listCheckValidator = new ListCheckValidator(checkList);
+    public ListCheckReportBuilder(ListCheckValidator listCheckValidator, String reportTitle) {
+
+        this.listCheckValidator = listCheckValidator;
         listCheckReport = new SebiAlertsReport();
         listCheckReport.setDate(new Date());
         listCheckReport.setTitle(reportTitle);
