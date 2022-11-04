@@ -2,8 +2,10 @@ package com.visibleai.sebi.report;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
@@ -22,10 +24,14 @@ public class Orchestrator {
 
     private ReportPrinter reportPrinter;
 
-    public Orchestrator() {
+    private PrintStream printStream;
+
+    public Orchestrator(String outputFilePath) throws FileNotFoundException {
 
         reportBuilders = new ReportBuilderFactory().createReportBuilders();
-        reportPrinter = new SebiAlertsReportPrinter();
+        File file = new File(outputFilePath);
+        printStream = new PrintStream(file);
+        reportPrinter = new SebiAlertsReportPrinter(printStream);
 
     }
 
@@ -67,11 +73,13 @@ public class Orchestrator {
 
         for (ReportBuilder reportBuilder : reportBuilders) {
             Report report = reportBuilder.getReport();
-            System.out.println();
-            System.out.println();
+            printStream.println();
+            printStream.println();
             reportPrinter.print(report);
         }
 
+        printStream.flush();
+        printStream.close();
     }
 
 }

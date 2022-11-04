@@ -13,7 +13,7 @@ public class SebiAlertsReportPrinterTest {
 
     @Test
     public void testSebiAlertsReportPrinter() {
-        SebiAlertsReportPrinter sebiAlertsReportPrinter = new SebiAlertsReportPrinter();
+        SebiAlertsReportPrinter sebiAlertsReportPrinter = new SebiAlertsReportPrinter(System.out);
         SebiAlertsReport report = new SebiAlertsReport();
         report.setTitle("Blibbity Blobbaty Blabbaty");
         Date date = new Date();
