@@ -13,7 +13,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import com.visibleai.sebi.Main;
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.builder.ReportBuilder;
@@ -28,6 +27,8 @@ public class Orchestrator {
 
     private PrintStream printStream;
 
+    private Properties properties;
+
     public Orchestrator(Properties properties) throws FileNotFoundException {
 
         reportBuilders = new ReportBuilderFactory().createReportBuilders(properties);
@@ -35,6 +36,7 @@ public class Orchestrator {
         File file = new File(reportOutputFilePath);
         printStream = new PrintStream(file);
         reportPrinter = new SebiAlertsReportPrinter(printStream);
+        this.properties = properties;
 
     }
 
@@ -42,13 +44,7 @@ public class Orchestrator {
 
         String fileName = null;
 
-        // If the file name is sent in the args then use that file name
-//        if (args != null && args.length > 0) {
-//            fileName = args[0];
-//        } else {
-        // otherwise use the file name from the resourcs package
-        fileName = Main.class.getClassLoader().getResource("sample-visitor-record-1000.csv").getFile();
-        // }
+        fileName = properties.getProperty(Constants.PROPERTY_VISITOR_ENTRY_FILE);
 
         // create an instance of the file
         File file = new File(fileName);
