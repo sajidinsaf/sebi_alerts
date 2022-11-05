@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
@@ -17,16 +18,18 @@ public class OutOfOfficeHoursReportBuilder implements ReportBuilder {
     private SebiAlertsReport outOfOfficeHoursReport = null;
     private VisitorTimeValidator outOfOfficeHoursValidator = null;
     private TableReportData outOfOfficeHoursReportData = null;
+    private Properties properties;
 
-    public OutOfOfficeHoursReportBuilder() {
+    public OutOfOfficeHoursReportBuilder(Properties properties) {
         outOfOfficeHoursReport = new SebiAlertsReport();
         outOfOfficeHoursReport.setDate(new Date());
         outOfOfficeHoursReport.setTitle("Out Of Office Hours Report");
-        outOfOfficeHoursValidator = new VisitorTimeValidator();
+        outOfOfficeHoursValidator = new VisitorTimeValidator(properties);
         outOfOfficeHoursReportData = new TableReportData();
         List<String> header = Arrays.asList("Name", "Phone Number", "Visitor Company", "Date", "Meeting",
                 "Type Of Visitor", "Comments");
         outOfOfficeHoursReportData.setHeader(header);
+        this.properties = properties;
     }
 
     public void build(VisitorEntry visitorEntry) {
@@ -36,7 +39,8 @@ public class OutOfOfficeHoursReportBuilder implements ReportBuilder {
             }
         } catch (ParseException e) {
             System.out.println("Invalid Date Time Format. Expected format "
-                    + Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT + ". Visitor entry: " + visitorEntry);
+                    + properties.getProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT) + ". Visitor entry: "
+                    + visitorEntry);
             return;
         }
         String name = visitorEntry.getVisitorName();

@@ -46,10 +46,10 @@ public class ReportBuilderFactory {
                 "Employees Watch List Report");
 
         mediaVisitorReportBuilder = new MediaVisitorReportBuilder();
-        outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder();
-        weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3);
-        twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6);
-        monthvisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9);
+        outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder(properties);
+        weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3, properties);
+        twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6, properties);
+        monthvisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9, properties);
 
         List<ReportBuilder> reportBuilders = Arrays.asList(brokerListCheckReportBuilder, govtListCheckReportBuilder,
                 employeesListCheckReportBuilder, mediaVisitorReportBuilder, outOfOfficeHoursReportBuilder,

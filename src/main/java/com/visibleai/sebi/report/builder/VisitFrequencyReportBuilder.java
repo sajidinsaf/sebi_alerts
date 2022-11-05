@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Report;
@@ -22,8 +23,8 @@ public class VisitFrequencyReportBuilder implements ReportBuilder {
     private Map<String, List<FrequentVisitorDetail>> visitFrequencyCheckMap;
     private int frequencyViolationNumber;
 
-    public VisitFrequencyReportBuilder(int numberOfDays, int frequencyViolationNumber) {
-        visitFrequencyCheck = new VisitFrequencyCheck(numberOfDays);
+    public VisitFrequencyReportBuilder(int numberOfDays, int frequencyViolationNumber, Properties properties) {
+        visitFrequencyCheck = new VisitFrequencyCheck(numberOfDays, properties);
         visitFrequencyCheckMap = new HashMap<String, List<FrequentVisitorDetail>>();
         visitFrequencyReport = new SebiAlertsReport();
         visitFrequencyReport.setTitle(numberOfDays + " Day Check Report");

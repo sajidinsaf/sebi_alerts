@@ -4,19 +4,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.report.builder.model.FrequentVisitorDetail;
 
 public class VisitFrequencyCheck {
     private int numberOfDays;
+    private Properties properties;
 
-    public VisitFrequencyCheck(int numberOfDaysInThisPeriod) {
+    public VisitFrequencyCheck(int numberOfDaysInThisPeriod, Properties properties) {
         numberOfDays = numberOfDaysInThisPeriod;
+        this.properties = properties;
     }
 
     public boolean check(FrequentVisitorDetail frequentVisitorDetail) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
+        String dateFormat = properties.getProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
         String timeIn = frequentVisitorDetail.getTimeIn();
         Date entryTime = simpleDateFormat.parse(timeIn);
         Date todaysDate = new Date();

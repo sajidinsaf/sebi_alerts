@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 
 import org.junit.Test;
 
@@ -18,7 +19,9 @@ public class VisitFrequencyCheckTest {
     public void testSevenDaysAgoCheck() throws ParseException {
 
         int period = 7;
-        VisitFrequencyCheck visitFrequencyCheck = new VisitFrequencyCheck(period);
+        Properties properties = new Properties();
+        properties.setProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
+        VisitFrequencyCheck visitFrequencyCheck = new VisitFrequencyCheck(period, properties);
 
         FrequentVisitorDetail visitBetweenPeriodStartAndEndDate = new FrequentVisitorDetail();
 

@@ -4,12 +4,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 
 import com.visibleai.sebi.model.Constants;
 
 public class VisitorTimeValidator {
+
+    private Properties properties;
+
+    public VisitorTimeValidator(Properties properties) {
+        this.properties = properties;
+    }
+
     public boolean isOutOfWorkingHours(String dayIn) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
+        String dateFormat = properties.getProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
 
         Date date = simpleDateFormat.parse(dayIn);
 
@@ -31,10 +40,5 @@ public class VisitorTimeValidator {
         }
 
         return false;
-    }
-
-    public static void main(String args[]) throws ParseException {
-        VisitorTimeValidator v = new VisitorTimeValidator();
-        v.isOutOfWorkingHours("16 Oct 2022 11:39AM");
     }
 }

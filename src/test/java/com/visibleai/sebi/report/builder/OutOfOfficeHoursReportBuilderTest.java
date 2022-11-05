@@ -3,9 +3,11 @@ package com.visibleai.sebi.report.builder;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.junit.Test;
 
+import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Report;
 import com.visibleai.sebi.report.ReportData;
@@ -14,7 +16,10 @@ public class OutOfOfficeHoursReportBuilderTest {
 
     @Test
     public void testOutOfOfficeHoursReportBuilder() {
-        OutOfOfficeHoursReportBuilder outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder();
+        Properties properties = new Properties();
+        properties.setProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
+
+        OutOfOfficeHoursReportBuilder outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder(properties);
 
         VisitorEntry duringOfficeHoursEntry = new VisitorEntry();
         duringOfficeHoursEntry.setVisitorName("Rajesh Potato");
@@ -65,7 +70,10 @@ public class OutOfOfficeHoursReportBuilderTest {
 
     @Test
     public void testInvalidTimeFormatEntry() {
-        OutOfOfficeHoursReportBuilder outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder();
+        Properties properties = new Properties();
+        properties.setProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
+
+        OutOfOfficeHoursReportBuilder outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder(properties);
 
         VisitorEntry invalidTimeFormatEntry = new VisitorEntry();
         invalidTimeFormatEntry.setVisitorName("Rajesh Potato");

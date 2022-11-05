@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import org.junit.Test;
 
@@ -20,8 +21,11 @@ public class VisitFrequencyReportBuilderTest {
     public void testVisitFrequencyReportBuilder() {
         int numberOfDays = 7;
         int frequencyViolationNumber = 3;
+        Properties properties = new Properties();
+        properties.setProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
+
         VisitFrequencyReportBuilder visitFrequencyReportBuilder = new VisitFrequencyReportBuilder(numberOfDays,
-                frequencyViolationNumber);
+                frequencyViolationNumber, properties);
 
         Date todaysDate = new Date();
         Calendar numberOfDaysAgo = Calendar.getInstance();

@@ -16,5 +16,6 @@ public abstract class Constants {
     public static final String PROPERTY_BROKER_LIST_FILE = "broker.list.file";
     public static final String PROPERTY_GOVT_ORG_LIST_FILE = "govt.org.list.file";
     public static final String PROPERTY_EMPLOYEE_MATCH_LIST_FILE = "employee.match.list.file";
+    public static final String PROPERTY_ENTRY_DATETIME_FORMAT = "entry.datetime.format";
     public static final String PROPERTY_REPORT_OUTPUT_FILE_PATH = "report.out.file.path";
 }
