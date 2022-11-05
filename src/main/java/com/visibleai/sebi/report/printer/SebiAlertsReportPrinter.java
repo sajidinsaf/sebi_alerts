@@ -18,13 +18,26 @@ public class SebiAlertsReportPrinter implements ReportPrinter {
     public void print(Report report) {
         outputStream.println("Title: " + report.getTitle());
         outputStream.println("Date: " + report.getDate());
+
         ReportData reportData = report.getReportData();
         List<String> header = reportData.getHeader();
-        outputStream.println(header);
+
+        String headerString = getAsCsvString(header);
+
+        outputStream.println(headerString);
+
         List<List<String>> rows = reportData.getRows();
         for (List<String> row : rows) {
-            outputStream.println(row);
+            String rowString = getAsCsvString(row);
+            outputStream.println(rowString);
         }
+    }
+
+    private String getAsCsvString(List<String> data) {
+        String dataString = data.toString();
+        dataString = dataString.substring(1);
+        dataString = dataString.substring(0, dataString.length() - 1);
+        return dataString;
     }
 
 }
