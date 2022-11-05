@@ -7,12 +7,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import com.visibleai.sebi.Main;
+import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.builder.ReportBuilder;
 import com.visibleai.sebi.report.printer.ReportPrinter;
@@ -26,10 +28,11 @@ public class Orchestrator {
 
     private PrintStream printStream;
 
-    public Orchestrator(String outputFilePath) throws FileNotFoundException {
+    public Orchestrator(Properties properties) throws FileNotFoundException {
 
-        reportBuilders = new ReportBuilderFactory().createReportBuilders();
-        File file = new File(outputFilePath);
+        reportBuilders = new ReportBuilderFactory().createReportBuilders(properties);
+        String reportOutputFilePath = properties.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
+        File file = new File(reportOutputFilePath);
         printStream = new PrintStream(file);
         reportPrinter = new SebiAlertsReportPrinter(printStream);
 

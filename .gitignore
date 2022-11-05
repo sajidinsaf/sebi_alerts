@@ -26,4 +26,4 @@ hs_err_pid*
 # other files to ignore
 .settings
 .DS_store
-
+Reports.txt
