@@ -10,6 +10,16 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <build>
+      <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+                <exclude>*.csv</exclude>
+                <exclude>*.numbers</exclude>
+            </excludes>
+            <filtering>false</filtering>
+        </resource>
+    </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

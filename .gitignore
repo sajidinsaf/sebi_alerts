@@ -27,3 +27,5 @@ hs_err_pid*
 .settings
 .DS_store
 Reports.txt
+sebi-alerts
+sebi-alerts.zip
