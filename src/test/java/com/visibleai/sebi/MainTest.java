@@ -4,18 +4,14 @@ import org.junit.Test;
 
 public class MainTest {
 
-  @Test
-  public void test() throws Exception {
+    @Test
+    public void test() throws Exception {
 
-    String fileName = Main.class.getClassLoader().getResource("sample-visitor-record.csv").getFile();
+        String fileName = Main.class.getClassLoader().getResource("config.properties").getFile();
 
-    System.out.println(fileName);
+        String[] args = new String[] { fileName };
+        Main.main(args);
 
-    // String fileName =
-    // "/Users/aarishois/Applications/Development/Projects/sebi_alerts/src/test/resources/sample-visitor-record.csv";
-
-    Main.main(new String[] { fileName });
-
-  }
+    }
 
 }
