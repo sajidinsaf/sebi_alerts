@@ -17,10 +17,12 @@ public class ListCheckReportBuilder implements ReportBuilder {
     private SebiAlertsReport listCheckReport;
     private TableReportData listCheckReportData;
 
-    public ListCheckReportBuilder(ListCheckValidator listCheckValidator, String reportTitle) {
+    public ListCheckReportBuilder(ListCheckValidator listCheckValidator, String reportTitle, String reportName) {
 
         this.listCheckValidator = listCheckValidator;
+
         listCheckReport = new SebiAlertsReport();
+        listCheckReport.setFileName(reportName);
         listCheckReport.setDate(new Date());
         listCheckReport.setTitle(reportTitle);
         listCheckReportData = new TableReportData();

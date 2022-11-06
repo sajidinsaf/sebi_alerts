@@ -25,17 +25,13 @@ public class Orchestrator {
 
     private ReportPrinter reportPrinter;
 
-    private PrintStream printStream;
-
     private Properties properties;
 
     public Orchestrator(Properties properties) throws FileNotFoundException {
 
         reportBuilders = new ReportBuilderFactory().createReportBuilders(properties);
-        String reportOutputFilePath = properties.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
-        File file = new File(reportOutputFilePath);
-        printStream = new PrintStream(file);
-        reportPrinter = new SebiAlertsReportPrinter(printStream);
+
+        reportPrinter = new SebiAlertsReportPrinter();
         this.properties = properties;
 
     }
@@ -71,14 +67,16 @@ public class Orchestrator {
         }
 
         for (ReportBuilder reportBuilder : reportBuilders) {
+
             Report report = reportBuilder.getReport();
-            printStream.println();
-            printStream.println();
-            reportPrinter.print(report);
+            String reportOutputFilePath = properties.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
+            File reportFile = new File(reportOutputFilePath + System.getProperty("file.separator") + report.getFileName());
+            PrintStream printStream = new PrintStream(reportFile);
+            reportPrinter.print(report, printStream);
+            printStream.flush();
+            printStream.close();
         }
 
-        printStream.flush();
-        printStream.close();
     }
 
 }

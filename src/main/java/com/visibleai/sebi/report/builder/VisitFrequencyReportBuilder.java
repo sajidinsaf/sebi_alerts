@@ -23,10 +23,12 @@ public class VisitFrequencyReportBuilder implements ReportBuilder {
     private Map<String, List<FrequentVisitorDetail>> visitFrequencyCheckMap;
     private int frequencyViolationNumber;
 
-    public VisitFrequencyReportBuilder(int numberOfDays, int frequencyViolationNumber, Properties properties) {
+    public VisitFrequencyReportBuilder(int numberOfDays, int frequencyViolationNumber, Properties properties,
+            String reportName) {
         visitFrequencyCheck = new VisitFrequencyCheck(numberOfDays, properties);
         visitFrequencyCheckMap = new HashMap<String, List<FrequentVisitorDetail>>();
         visitFrequencyReport = new SebiAlertsReport();
+        visitFrequencyReport.setFileName(reportName);
         visitFrequencyReport.setTitle(numberOfDays + " Day Check Report");
         visitFrequencyReport.setDate(new Date());
         this.frequencyViolationNumber = frequencyViolationNumber;

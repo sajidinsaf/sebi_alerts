@@ -22,9 +22,11 @@ public class ListCheckReportBuilderTest {
         List<String> checkList = Arrays.asList("ICICI Bank", "HDFC", "Bank Of India", "HDFC", "Axis Direct",
                 "Paytm Money");
         String reportTitle = "List Check Report";
+        String fileName = "ListCheckReport.csv";
 
         ListCheckValidator companyMatchValidator = new CompanyMatchValidator(checkList);
-        ListCheckReportBuilder listCheckReportBuilder = new ListCheckReportBuilder(companyMatchValidator, reportTitle);
+        ListCheckReportBuilder listCheckReportBuilder = new ListCheckReportBuilder(companyMatchValidator, reportTitle,
+                fileName);
 
         VisitorEntry isVisitorCompanyEntry = new VisitorEntry();
         isVisitorCompanyEntry.setVisitorCompany("ICICI Bank");

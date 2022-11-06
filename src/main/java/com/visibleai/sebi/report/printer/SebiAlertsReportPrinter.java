@@ -8,14 +8,8 @@ import com.visibleai.sebi.report.ReportData;
 
 public class SebiAlertsReportPrinter implements ReportPrinter {
 
-    private PrintStream outputStream;
-
-    public SebiAlertsReportPrinter(PrintStream outputStream) {
-        this.outputStream = outputStream;
-    }
-
     @Override
-    public void print(Report report) {
+    public void print(Report report, PrintStream outputStream) {
         outputStream.println("Title: " + report.getTitle());
         outputStream.println("Date: " + report.getDate());
 

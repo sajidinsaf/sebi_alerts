@@ -21,11 +21,13 @@ public class VisitFrequencyReportBuilderTest {
     public void testVisitFrequencyReportBuilder() {
         int numberOfDays = 7;
         int frequencyViolationNumber = 3;
+        String fileNamePrefix = "VisitFrequencyCheckReport-";
+        String fileNameSuffix = "_days.csv";
         Properties properties = new Properties();
         properties.setProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
 
         VisitFrequencyReportBuilder visitFrequencyReportBuilder = new VisitFrequencyReportBuilder(numberOfDays,
-                frequencyViolationNumber, properties);
+                frequencyViolationNumber, properties, fileNamePrefix + numberOfDays + fileNameSuffix);
 
         Date todaysDate = new Date();
         Calendar numberOfDaysAgo = Calendar.getInstance();

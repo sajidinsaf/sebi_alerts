@@ -40,16 +40,23 @@ public class ReportBuilderFactory {
         ListCheckValidator govtOrgMatchValidator = new CompanyMatchValidator(loadListFromFile(govtOrgListFile));
         ListCheckValidator employeeMatchValidator = new EmployeeMatchValidator(loadListFromFile(employeeMatchListFile));
 
-        brokerListCheckReportBuilder = new ListCheckReportBuilder(brokerCompanyMatchValidator, "Broker Visitor Report");
-        govtListCheckReportBuilder = new ListCheckReportBuilder(govtOrgMatchValidator, "Government Visitor Report");
+        brokerListCheckReportBuilder = new ListCheckReportBuilder(brokerCompanyMatchValidator, "Broker Visitor Report",
+                "BrokerVisitorReport.csv");
+        govtListCheckReportBuilder = new ListCheckReportBuilder(govtOrgMatchValidator, "Government Visitor Report",
+                "GovtVisitorReport.csv");
         employeesListCheckReportBuilder = new ListCheckReportBuilder(employeeMatchValidator,
-                "Employees Watch List Report");
+                "Employees Watch List Report", "EmployeeWatchListReport.csv");
 
         mediaVisitorReportBuilder = new MediaVisitorReportBuilder();
         outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder(properties);
-        weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3, properties);
-        twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6, properties);
-        monthvisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9, properties);
+        String fileNamePrefix = "VisitorFrequencyCheckReport-";
+        String fileNameSuffix = "_days.csv";
+        weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3, properties,
+                fileNamePrefix + "7" + fileNameSuffix);
+        twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6, properties,
+                fileNamePrefix + "14" + fileNameSuffix);
+        monthvisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9, properties,
+                fileNamePrefix + "30" + fileNameSuffix);
 
         List<ReportBuilder> reportBuilders = Arrays.asList(brokerListCheckReportBuilder, govtListCheckReportBuilder,
                 employeesListCheckReportBuilder, mediaVisitorReportBuilder, outOfOfficeHoursReportBuilder,

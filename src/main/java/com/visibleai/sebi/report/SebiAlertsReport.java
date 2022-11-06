@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class SebiAlertsReport implements Report {
 
+    private String name;
+
     private String title = null;
 
     private Date date = null;
@@ -32,6 +34,16 @@ public class SebiAlertsReport implements Report {
 
     public void setReportData(ReportData dataInReport) {
         reportData = dataInReport;
+    }
+
+    public void setFileName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getFileName() {
+
+        return name;
     }
 
 }

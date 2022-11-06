@@ -18,6 +18,7 @@ public class MediaVisitorReportBuilder implements ReportBuilder {
 
     public MediaVisitorReportBuilder() {
         mediaVisitorReport = new SebiAlertsReport();
+        mediaVisitorReport.setFileName("MediaVisitorReport.csv");
         mediaVisitorReport.setDate(new Date());
         mediaVisitorReport.setTitle("Media Visitor Report");
         mediaVisitorValidator = new AccessCardValidator();

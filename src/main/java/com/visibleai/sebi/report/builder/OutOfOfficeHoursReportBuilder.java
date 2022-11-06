@@ -22,6 +22,7 @@ public class OutOfOfficeHoursReportBuilder implements ReportBuilder {
 
     public OutOfOfficeHoursReportBuilder(Properties properties) {
         outOfOfficeHoursReport = new SebiAlertsReport();
+        outOfOfficeHoursReport.setFileName("OutOfOfficeHoursReport.csv");
         outOfOfficeHoursReport.setDate(new Date());
         outOfOfficeHoursReport.setTitle("Out Of Office Hours Report");
         outOfOfficeHoursValidator = new VisitorTimeValidator(properties);
