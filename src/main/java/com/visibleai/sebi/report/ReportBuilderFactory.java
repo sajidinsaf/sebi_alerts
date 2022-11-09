@@ -19,6 +19,7 @@ import com.visibleai.sebi.util.DateUtil;
 import com.visibleai.sebi.validation.CompanyMatchValidator;
 import com.visibleai.sebi.validation.EmployeeMatchValidator;
 import com.visibleai.sebi.validation.ListCheckValidator;
+import com.visibleai.sebi.validation.VisitorMatchValidator;
 
 public class ReportBuilderFactory {
   private DateUtil dateUtil;
@@ -30,6 +31,7 @@ public class ReportBuilderFactory {
   public List<ReportBuilder> createReportBuilders(Properties properties) {
     ReportBuilder brokerListCheckReportBuilder;
     ReportBuilder govtListCheckReportBuilder;
+    ReportBuilder visitorListCheckReportBuilder;
     ReportBuilder employeesListCheckReportBuilder;
     ReportBuilder mediaVisitorReportBuilder;
     ReportBuilder outOfOfficeHoursReportBuilder;
@@ -40,10 +42,12 @@ public class ReportBuilderFactory {
     String brokerCompanyListFile = properties.getProperty(Constants.PROPERTY_BROKER_LIST_FILE);
     String govtOrgListFile = properties.getProperty(Constants.PROPERTY_GOVT_ORG_LIST_FILE);
     String employeeMatchListFile = properties.getProperty(Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE);
+    String visitorMatchListFile = properties.getProperty(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE);
 
     ListCheckValidator brokerCompanyMatchValidator = new CompanyMatchValidator(loadListFromFile(brokerCompanyListFile));
     ListCheckValidator govtOrgMatchValidator = new CompanyMatchValidator(loadListFromFile(govtOrgListFile));
     ListCheckValidator employeeMatchValidator = new EmployeeMatchValidator(loadListFromFile(employeeMatchListFile));
+    ListCheckValidator visitorMatchValidator = new VisitorMatchValidator(loadListFromFile(visitorMatchListFile));
 
     brokerListCheckReportBuilder = new ListCheckReportBuilder(brokerCompanyMatchValidator, "Broker Visitor Report",
         "BrokerVisitorReport.csv");
@@ -51,6 +55,9 @@ public class ReportBuilderFactory {
         "GovtVisitorReport.csv");
     employeesListCheckReportBuilder = new ListCheckReportBuilder(employeeMatchValidator, "Employees Watch List Report",
         "EmployeeWatchListReport.csv");
+
+    visitorListCheckReportBuilder = new ListCheckReportBuilder(visitorMatchValidator, "Visitor Watch List Report",
+        "VisitorWatchListReport.csv");
 
     mediaVisitorReportBuilder = new MediaVisitorReportBuilder();
     outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder(properties, dateUtil);
@@ -64,8 +71,9 @@ public class ReportBuilderFactory {
         fileNamePrefix + "30" + fileNameSuffix);
 
     List<ReportBuilder> reportBuilders = Arrays.asList(brokerListCheckReportBuilder, govtListCheckReportBuilder,
-        employeesListCheckReportBuilder, mediaVisitorReportBuilder, outOfOfficeHoursReportBuilder,
-        weekVisitFrequencyReportBuilder, twoWeekVisitFrequencyReportBuilder, monthvisitFrequencyReportBuilder);
+        employeesListCheckReportBuilder, visitorListCheckReportBuilder, mediaVisitorReportBuilder,
+        outOfOfficeHoursReportBuilder, weekVisitFrequencyReportBuilder, twoWeekVisitFrequencyReportBuilder,
+        monthvisitFrequencyReportBuilder);
     return reportBuilders;
   }
 

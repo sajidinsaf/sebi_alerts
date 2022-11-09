@@ -17,6 +17,8 @@ public abstract class Constants {
   public static final String PROPERTY_EMPLOYEE_MATCH_LIST_FILE = "employee.match.list.file";
   public static final String PROPERTY_ENTRY_DATETIME_FORMAT = "entry.datetime.format";
   public static final String PROPERTY_REPORT_OUTPUT_FILE_PATH = "report.out.file.path";
+  public static final String PROPERTY_VISITOR_MATCH_LIST_FILE = "visitor.list.file";
 
   public static final String REPORT_DATE_FORMAT = "dd MMM yyyy";
+
 }
