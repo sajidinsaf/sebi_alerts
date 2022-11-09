@@ -22,7 +22,7 @@ public class SebiAlertsReportPrinterTest {
     report.setDate(date);
     TableReportData reportData = new TableReportData();
     List<String> header = Arrays.asList("A", "B", "C");
-    List<String> row = Arrays.asList("a", "b", "c");
+    List<String> row = Arrays.asList("a", "B,b", "C,c,cc");
     reportData.setHeader(header);
     reportData.addRow(row);
     report.setReportData(reportData);

@@ -5,6 +5,7 @@ import static com.visibleai.sebi.model.Constants.REPORT_DATE_FORMAT;
 import java.io.PrintStream;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.visibleai.sebi.report.Report;
 import com.visibleai.sebi.report.ReportData;
@@ -53,7 +54,11 @@ public class SebiAlertsReportPrinter implements ReportPrinter {
   }
 
   private String getAsCsvString(List<String> data) {
-    String dataString = data.toString();
+    // As we are writing to a CSV file, check and replace any comma in the data with
+    // a semi-colon
+    List<String> dataList = data.stream().map(s -> s != null ? s.replaceAll(",", ";") : "")
+        .collect(Collectors.toList());
+    String dataString = dataList.toString();
     dataString = dataString.substring(1);
     dataString = dataString.substring(0, dataString.length() - 1);
     return dataString;
