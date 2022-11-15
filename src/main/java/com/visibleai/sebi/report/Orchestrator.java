@@ -69,8 +69,9 @@ public class Orchestrator {
         try {
           reportBuilder.build(visitorEntry);
         } catch (RuntimeException e) {
+          e.printStackTrace();
           System.out.println("Error while reading visitor entry: [" + visitorEntry + "] with report builder: "
-              + reportBuilder.getClass().getName() + " Exception message: " + e);
+              + reportBuilder.getClass().getName() + " Exception message: " + e.getMessage());
         }
       }
 
