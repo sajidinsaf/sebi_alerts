@@ -20,6 +20,7 @@ import com.visibleai.sebi.report.builder.ReportBuilder;
 import com.visibleai.sebi.report.printer.ReportPrinter;
 import com.visibleai.sebi.report.printer.SebiAlertsReportPrinter;
 import com.visibleai.sebi.util.DateUtil;
+import com.visibleai.sebi.validation.util.VisitFrequencyCheckFactory;
 
 public class Orchestrator {
 
@@ -31,7 +32,8 @@ public class Orchestrator {
 
   public Orchestrator(Properties properties, DateUtil dateUtil) throws FileNotFoundException {
 
-    reportBuilders = new ReportBuilderFactory(dateUtil).createReportBuilders(properties);
+    reportBuilders = new ReportBuilderFactory(dateUtil, new VisitFrequencyCheckFactory(dateUtil))
+        .createReportBuilders(properties);
     this.properties = properties;
     this.dateUtil = dateUtil;
 

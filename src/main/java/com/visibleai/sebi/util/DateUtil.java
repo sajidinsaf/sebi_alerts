@@ -2,6 +2,9 @@ package com.visibleai.sebi.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class DateUtil {
@@ -38,5 +41,20 @@ public class DateUtil {
       return date2;
     }
     return date1;
+  }
+
+  public boolean sameDate(Date date1, Date date2) {
+    return date1.getTime() == date2.getTime();
+  }
+
+  public int daysBetween(Date startDate, Date endDate) {
+    LocalDateTime start = convertToLocalDateTimeViaInstant(startDate);
+    LocalDateTime end = convertToLocalDateTimeViaInstant(endDate);
+
+    return (int) Duration.between(start, end).toDays();
+  }
+
+  public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+    return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
   }
 }

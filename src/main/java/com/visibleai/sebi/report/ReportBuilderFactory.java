@@ -20,12 +20,15 @@ import com.visibleai.sebi.validation.CompanyMatchValidator;
 import com.visibleai.sebi.validation.EmployeeMatchValidator;
 import com.visibleai.sebi.validation.ListCheckValidator;
 import com.visibleai.sebi.validation.VisitorMatchValidator;
+import com.visibleai.sebi.validation.util.VisitFrequencyCheckFactory;
 
 public class ReportBuilderFactory {
   private DateUtil dateUtil;
+  private VisitFrequencyCheckFactory visitFrequencyCheckFactory;
 
-  public ReportBuilderFactory(DateUtil dateUtil) {
+  public ReportBuilderFactory(DateUtil dateUtil, VisitFrequencyCheckFactory visitFrequencyCheckFactory) {
     this.dateUtil = dateUtil;
+    this.visitFrequencyCheckFactory = visitFrequencyCheckFactory;
   }
 
   public List<ReportBuilder> createReportBuilders(Properties properties) {
@@ -63,12 +66,13 @@ public class ReportBuilderFactory {
     outOfOfficeHoursReportBuilder = new OutOfOfficeHoursReportBuilder(properties, dateUtil);
     String fileNamePrefix = "VisitorFrequencyCheckReport-";
     String fileNameSuffix = "_days.csv";
-    weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3, properties,
-        fileNamePrefix + "7" + fileNameSuffix);
-    twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6, properties,
-        fileNamePrefix + "14" + fileNameSuffix);
-    monthvisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9, properties,
-        fileNamePrefix + "30" + fileNameSuffix);
+
+    weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3, fileNamePrefix + "7" + fileNameSuffix,
+        visitFrequencyCheckFactory.getVisitFrequencyCheck(properties, 7, 3));
+    twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6, fileNamePrefix + "14" + fileNameSuffix,
+        visitFrequencyCheckFactory.getVisitFrequencyCheck(properties, 14, 6));
+    monthvisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9, fileNamePrefix + "30" + fileNameSuffix,
+        visitFrequencyCheckFactory.getVisitFrequencyCheck(properties, 30, 9));
 
     List<ReportBuilder> reportBuilders = Arrays.asList(brokerListCheckReportBuilder, govtListCheckReportBuilder,
         employeesListCheckReportBuilder, visitorListCheckReportBuilder, mediaVisitorReportBuilder,
@@ -87,4 +91,5 @@ public class ReportBuilderFactory {
     }
     return new ArrayList<String>();
   }
+
 }
