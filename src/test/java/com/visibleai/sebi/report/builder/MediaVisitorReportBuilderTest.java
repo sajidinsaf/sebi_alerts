@@ -26,6 +26,7 @@ public class MediaVisitorReportBuilderTest {
         nonMediaVisitorEntry.setVisitorName("Shahrukh Khan");
         nonMediaVisitorEntry.setToMeet("Rahul Mishra");
         nonMediaVisitorEntry.setTimeIn("21 Jul 2022 10:18am");
+        nonMediaVisitorEntry.setTimeOut("21 Jul 2022 5:18pm");
 
         mediaVisitorReportBuilder.build(nonMediaVisitorEntry);
 
@@ -36,6 +37,7 @@ public class MediaVisitorReportBuilderTest {
         mediaVisitorEntry.setVisitorName("Salman Khan");
         mediaVisitorEntry.setToMeet("Amir Khan");
         mediaVisitorEntry.setTimeIn("22 Jun 2022 11:32am");
+        mediaVisitorEntry.setTimeOut("22 Jun 2022 01:32pm");
 
         mediaVisitorReportBuilder.build(mediaVisitorEntry);
 
@@ -47,9 +49,10 @@ public class MediaVisitorReportBuilderTest {
         assertEquals("Name", header.get(0));
         assertEquals("Phone Number", header.get(1));
         assertEquals("Meeting", header.get(2));
-        assertEquals("Date", header.get(3));
-        assertEquals("Access Card ID", header.get(4));
-        assertEquals("Comments", header.get(5));
+        assertEquals("Date(Time In)", header.get(3));
+        assertEquals("Date(Time Out)", header.get(4));
+        assertEquals("Access Card ID", header.get(5));
+        assertEquals("Comments", header.get(6));
 
         List<List<String>> rows = mediaVisitorReportData.getRows();
         assertEquals(1, rows.size());
@@ -59,8 +62,9 @@ public class MediaVisitorReportBuilderTest {
         assertEquals("1238392890", row.get(1));
         assertEquals("Amir Khan", row.get(2));
         assertEquals("22 Jun 2022 11:32am", row.get(3));
-        assertEquals("M-123", row.get(4));
-        assertEquals("", row.get(5));
+        assertEquals("22 Jun 2022 01:32pm", row.get(4));
+        assertEquals("M-123", row.get(5));
+        assertEquals("", row.get(6));
 
         Date date = mediaVisitorReport.getDate();
         Date today = new Date();

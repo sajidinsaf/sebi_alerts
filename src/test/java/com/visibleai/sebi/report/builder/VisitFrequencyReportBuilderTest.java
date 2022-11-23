@@ -119,10 +119,11 @@ public class VisitFrequencyReportBuilderTest {
         assertEquals("Phone Number", header.get(0));
         assertEquals("Name", header.get(1));
         assertEquals("Meeting with", header.get(2));
-        assertEquals("Date", header.get(3));
-        assertEquals("Visitors Company", header.get(4));
-        assertEquals("Type Of Visitor", header.get(5));
-        assertEquals("Comments", header.get(6));
+        assertEquals("Date(TimeIn)", header.get(3));
+        assertEquals("Date(TimeOut)", header.get(4));
+        assertEquals("Visitors Company", header.get(5));
+        assertEquals("Type Of Visitor", header.get(6));
+        assertEquals("Comments", header.get(7));
 
         List<List<String>> rows = betweenSevenDaysReportData.getRows();
         assertEquals(1, rows.size());

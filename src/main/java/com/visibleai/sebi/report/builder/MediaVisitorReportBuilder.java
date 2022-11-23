@@ -23,7 +23,8 @@ public class MediaVisitorReportBuilder implements ReportBuilder {
         mediaVisitorReport.setTitle("Media Visitor Report");
         mediaVisitorValidator = new AccessCardValidator();
         mediaVisitorReportData = new TableReportData();
-        List<String> header = Arrays.asList("Name", "Phone Number", "Meeting", "Date", "Access Card ID", "Comments");
+        List<String> header = Arrays.asList("Name", "Phone Number", "Meeting", "Date(Time In)", "Date(Time Out)",
+                "Access Card ID", "Comments");
         mediaVisitorReportData.setHeader(header);
     }
 
@@ -35,10 +36,11 @@ public class MediaVisitorReportBuilder implements ReportBuilder {
         String name = visitorEntry.getVisitorName();
         String phoneNumber = visitorEntry.getVisitorNumber();
         String meeting = visitorEntry.getToMeet();
-        String date = visitorEntry.getTimeIn();
+        String dateIn = visitorEntry.getTimeIn();
+        String dateOut = visitorEntry.getTimeOut();
         String accessCardID = visitorEntry.getAccessCardId();
         String comments = "";
-        List<String> row = Arrays.asList(name, phoneNumber, meeting, date, accessCardID, comments);
+        List<String> row = Arrays.asList(name, phoneNumber, meeting, dateIn, dateOut, accessCardID, comments);
         mediaVisitorReportData.addRow(row);
     }
 

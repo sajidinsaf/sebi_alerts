@@ -34,6 +34,7 @@ public class ListCheckReportBuilderTest {
         isVisitorCompanyEntry.setVisitorNumber("1234567890");
         isVisitorCompanyEntry.setToMeet("Matt Damon");
         isVisitorCompanyEntry.setTimeIn("20 Oct 2022 10:30am");
+        isVisitorCompanyEntry.setTimeOut("20 Oct 2022 05:30pm");
         isVisitorCompanyEntry.setAccessCardId("V-174");
         listCheckReportBuilder.build(isVisitorCompanyEntry);
 
@@ -43,6 +44,7 @@ public class ListCheckReportBuilderTest {
         isNonVisitorCompanyEntry.setVisitorNumber("3947503958");
         isNonVisitorCompanyEntry.setToMeet("Brad Pitt");
         isNonVisitorCompanyEntry.setTimeIn("23 Oct 2022 05:45am");
+        isNonVisitorCompanyEntry.setTimeOut("23 Oct 2022 08:45pm");
         isNonVisitorCompanyEntry.setAccessCardId("M-253");
         listCheckReportBuilder.build(isNonVisitorCompanyEntry);
 
@@ -55,9 +57,10 @@ public class ListCheckReportBuilderTest {
         assertEquals("Name", header.get(1));
         assertEquals("Phone Number", header.get(2));
         assertEquals("Meeting with", header.get(3));
-        assertEquals("Date", header.get(4));
-        assertEquals("Type of visitor", header.get(5));
-        assertEquals("Comments", header.get(6));
+        assertEquals("Date(Time In)", header.get(4));
+        assertEquals("Date(Time Out)", header.get(5));
+        assertEquals("Type of visitor", header.get(6));
+        assertEquals("Comments", header.get(7));
 
         List<List<String>> rows = listCheckReportData.getRows();
         assertEquals(1, rows.size());
@@ -68,8 +71,9 @@ public class ListCheckReportBuilderTest {
         assertEquals("1234567890", row.get(2));
         assertEquals("Matt Damon", row.get(3));
         assertEquals("20 Oct 2022 10:30am", row.get(4));
-        assertEquals("V-174", row.get(5));
-        assertEquals("", row.get(6));
+        assertEquals("20 Oct 2022 05:30pm", row.get(5));
+        assertEquals("V-174", row.get(6));
+        assertEquals("", row.get(7));
 
         Date date = listCheckReport.getDate();
         Date today = new Date();

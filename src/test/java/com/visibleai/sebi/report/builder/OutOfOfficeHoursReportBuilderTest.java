@@ -31,6 +31,7 @@ public class OutOfOfficeHoursReportBuilderTest {
         duringOfficeHoursEntry.setVisitorNumber("908763421");
         duringOfficeHoursEntry.setVisitorCompany("GODREJ");
         duringOfficeHoursEntry.setTimeIn("21 Jul 2022 10:18am");
+        duringOfficeHoursEntry.setTimeOut("21 Jul 2022 12:18pm");
         duringOfficeHoursEntry.setToMeet("Croissant Breadwala");
         duringOfficeHoursEntry.setAccessCardId("V-234");
 
@@ -41,6 +42,7 @@ public class OutOfOfficeHoursReportBuilderTest {
         notDuringOfficeHoursEntry.setVisitorNumber("8274620197");
         notDuringOfficeHoursEntry.setVisitorCompany("ICICI Bank");
         notDuringOfficeHoursEntry.setTimeIn("21 Jul 2022 09:30pm");
+        notDuringOfficeHoursEntry.setTimeOut("21 Jul 2022 03:30am");
         notDuringOfficeHoursEntry.setToMeet("Chintu Tomato");
         notDuringOfficeHoursEntry.setAccessCardId("A-682");
 
@@ -54,10 +56,11 @@ public class OutOfOfficeHoursReportBuilderTest {
         assertEquals("Name", header.get(0));
         assertEquals("Phone Number", header.get(1));
         assertEquals("Visitor Company", header.get(2));
-        assertEquals("Date", header.get(3));
-        assertEquals("Meeting", header.get(4));
-        assertEquals("Type Of Visitor", header.get(5));
-        assertEquals("Comments", header.get(6));
+        assertEquals("Date(Time In)", header.get(3));
+        assertEquals("Date(Time Out)", header.get(4));
+        assertEquals("Meeting", header.get(5));
+        assertEquals("Type Of Visitor", header.get(6));
+        assertEquals("Comments", header.get(7));
 
         List<List<String>> rows = outOfOfficeHoursReportData.getRows();
         assertEquals(1, rows.size());
@@ -67,9 +70,10 @@ public class OutOfOfficeHoursReportBuilderTest {
         assertEquals("8274620197", row.get(1));
         assertEquals("ICICI Bank", row.get(2));
         assertEquals("21 Jul 2022 09:30pm", row.get(3));
-        assertEquals("Chintu Tomato", row.get(4));
-        assertEquals("A-682", row.get(5));
-        assertEquals("", row.get(6));
+        assertEquals("21 Jul 2022 03:30am", row.get(4));
+        assertEquals("Chintu Tomato", row.get(5));
+        assertEquals("A-682", row.get(6));
+        assertEquals("", row.get(7));
     }
 
     @Test
@@ -85,6 +89,7 @@ public class OutOfOfficeHoursReportBuilderTest {
         invalidTimeFormatEntry.setVisitorNumber("908763421");
         invalidTimeFormatEntry.setVisitorCompany("GODREJ");
         invalidTimeFormatEntry.setTimeIn("21 Jul 2022 22:30");
+        invalidTimeFormatEntry.setTimeOut("21 Jul 2022 23:30");
         invalidTimeFormatEntry.setToMeet("Croissant Breadwala");
         invalidTimeFormatEntry.setAccessCardId("V-234");
 
@@ -99,6 +104,7 @@ public class OutOfOfficeHoursReportBuilderTest {
         notDuringOfficeHoursEntry.setVisitorNumber("8274620197");
         notDuringOfficeHoursEntry.setVisitorCompany("ICICI Bank");
         notDuringOfficeHoursEntry.setTimeIn("21 Jul 2022 09:30pm");
+        notDuringOfficeHoursEntry.setTimeOut("21 Jul 2022 02:30am");
         notDuringOfficeHoursEntry.setToMeet("Chintu Tomato");
         notDuringOfficeHoursEntry.setAccessCardId("A-682");
 
@@ -112,10 +118,11 @@ public class OutOfOfficeHoursReportBuilderTest {
         assertEquals("Name", header.get(0));
         assertEquals("Phone Number", header.get(1));
         assertEquals("Visitor Company", header.get(2));
-        assertEquals("Date", header.get(3));
-        assertEquals("Meeting", header.get(4));
-        assertEquals("Type Of Visitor", header.get(5));
-        assertEquals("Comments", header.get(6));
+        assertEquals("Date(Time In)", header.get(3));
+        assertEquals("Date(Time Out)", header.get(4));
+        assertEquals("Meeting", header.get(5));
+        assertEquals("Type Of Visitor", header.get(6));
+        assertEquals("Comments", header.get(7));
 
         List<List<String>> rows = outOfOfficeHoursReportData.getRows();
         assertEquals(1, rows.size());
@@ -125,9 +132,10 @@ public class OutOfOfficeHoursReportBuilderTest {
         assertEquals("8274620197", row.get(1));
         assertEquals("ICICI Bank", row.get(2));
         assertEquals("21 Jul 2022 09:30pm", row.get(3));
-        assertEquals("Chintu Tomato", row.get(4));
-        assertEquals("A-682", row.get(5));
-        assertEquals("", row.get(6));
+        assertEquals("21 Jul 2022 02:30am", row.get(4));
+        assertEquals("Chintu Tomato", row.get(5));
+        assertEquals("A-682", row.get(6));
+        assertEquals("", row.get(7));
 
     }
 }
