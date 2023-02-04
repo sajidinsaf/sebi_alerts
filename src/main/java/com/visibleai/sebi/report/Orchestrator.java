@@ -1,18 +1,12 @@
 package com.visibleai.sebi.report;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
@@ -39,34 +33,16 @@ public class Orchestrator {
 
     }
 
-    public void generateReports() throws IOException {
-
-        String fileName = null;
-
-        fileName = properties.getProperty(Constants.PROPERTY_VISITOR_ENTRY_FILE);
-
-        // create an instance of the file
-        File file = new File(fileName);
-
-        // create a reader for this file
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-
-        // Parse the file using the apache CSV library
-        CSVParser parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
-
-        // Get the list of CSV records
-        List<CSVRecord> csvRecords = parser.getRecords();
+    public void generateReports(List<VisitorEntry> visitorEntries) throws IOException {
 
         String dateFormat = properties.getProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT);
         Date startDate = new Date();
         Date endDate = null;
 
-        // For each CSV record do the validations
-        for (int i = 0; i < csvRecords.size(); i++) {
-            CSVRecord csvRecord = csvRecords.get(i);
+        // For each visitor entry do the validations
+        for (int i = 0; i < visitorEntries.size(); i++) {
 
-            VisitorEntry visitorEntry = new VisitorEntry(csvRecord);
-
+            VisitorEntry visitorEntry = visitorEntries.get(i);
             for (ReportBuilder reportBuilder : reportBuilders) {
                 try {
                     reportBuilder.build(visitorEntry);

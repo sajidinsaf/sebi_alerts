@@ -2,6 +2,8 @@ package com.visibleai.sebi.model;
 
 public abstract class Constants {
 
+    public static final String VISITOR_ENTRY_SOURCE = "visitor.entry.source";
+
     public static final String DEFAULT_VISITOR_ENTRY_DATE_FORMAT = "dd MMM yyyy hh:mma";
     public static final String BROKERS_LIST_FILE = Constants.class.getClassLoader().getResource("BrokerList.txt")
             .getFile();
@@ -23,7 +25,7 @@ public abstract class Constants {
     public static final String PROPERTY_VAMS_DB_URL = "vams.db.url";
     public static final String PROPERTY_VAMS_DB_USER = "vams.db.user";
     public static final String PROPERTY_VAMS_DB_PASSWORD = "vams.db.password";
-    
+
     public static final String REPORT_DATE_FORMAT = "dd MMM yyyy";
     public static final String LAST_DAY_OF_MONTH_DATE_FORMAT = "dd-MM-yyyy";
 
