@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Home page</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <p>
+        <!-- <span th:text="List of Visitor Entries"></span> -->
+        </p>
+      
+        <div th:if="${ not#lists.isEmpty(visitorEntries)}">
+          <table>
+            <tr>
+              <th>Name</th>
+              <th>Phone Number</th>
+              <th>Company</th>
+              <th>Meet With</th>
+              <th>Date</th>
+            </tr>
+            <tr th:each="visitorEntry : ${visitorEntries}">
+              <td th:text="${visitorEntry.visitorName}"></td>
+              <td th:text="${visitorEntry.visitorNumber}"></td>
+              <td th:text="${visitorEntry.visitorCompany}"></td>
+              <td th:text="${visitorEntry.toMeet}"></td>
+              <td th:text="${visitorEntry.timeIn}"></td>
+            </tr>
+          <table>
+        </div>
+    </body>
+</html>

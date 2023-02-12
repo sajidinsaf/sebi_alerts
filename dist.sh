@@ -7,8 +7,8 @@ mkdir -p sebi-alerts/view
 mkdir dist
 
 
-#cp ./target/sebi_alerts-1.0.0.jar sebi-alerts/sebi-alerts.jar
-cp ./target/sebi_alerts-1.0.0-jar-with-dependencies.jar sebi-alerts/sebi-alerts.jar
+cp ./target/sebi_alerts-1.0.0.jar sebi-alerts/sebi-alerts.jar
+#cp ./target/sebi_alerts-1.0.0-jar-with-dependencies.jar sebi-alerts/sebi-alerts.jar
 cp src/main/resources/sample-visitor-record-1000.csv sebi-alerts
 cp src/main/resources/*.txt sebi-alerts
 cp src/main/resources/config-dist.properties sebi-alerts/config.properties
