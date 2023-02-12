@@ -1,0 +1,1 @@
+java -cp sebi-alerts.jar:lib/* com.visibleai.sebi.Main config.properties

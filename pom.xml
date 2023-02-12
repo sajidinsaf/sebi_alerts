@@ -5,6 +5,12 @@
   <version>1.0.0</version>
   <name>sebi_alerts</name>
   <description>Alerts management software for SEBI</description>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.7.2</version>
+    <relativePath />
+</parent>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -42,7 +48,21 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> 
+            <plugin>
+            	<artifactId>maven-dependency-plugin</artifactId>
+	            <executions>
+	              <execution>
+	                <phase>install</phase>
+	                <goals>
+	                  <goal>copy-dependencies</goal>
+	                </goals>
+	                <configuration>
+	                  <outputDirectory>${project.build.directory}/lib</outputDirectory>
+	                </configuration>
+	              </execution>
+	            </executions>
+          	</plugin>
         </plugins>
     </build>
   <dependencies>
@@ -50,7 +70,6 @@
 	<dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
-	    <version>4.12</version>
 	    <scope>test</scope>
 	</dependency>
 	<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
@@ -59,18 +78,36 @@
        <artifactId>commons-csv</artifactId>
        <version>1.9.0</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-	<dependency>
-	    <groupId>mysql</groupId>
-	    <artifactId>mysql-connector-java</artifactId>
-	    <version>8.0.15</version>
-	    <scope>test</scope>
-	</dependency>
 	<!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
 	<dependency>
 	    <groupId>com.sun.mail</groupId>
 	    <artifactId>javax.mail</artifactId>
 	    <version>1.6.2</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-data-jpa</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>com.h2database</groupId>
+	    <artifactId>h2</artifactId>
+	</dependency>
+	<dependency> 
+	    <groupId>org.springframework.boot</groupId> 
+	    <artifactId>spring-boot-starter-thymeleaf</artifactId> 
+	</dependency>
+	<dependency> 
+	    <groupId>org.springframework.boot</groupId> 
+	    <artifactId>spring-boot-starter-security</artifactId> 
+	</dependency>	
+	<!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+	<dependency>
+	    <groupId>com.microsoft.sqlserver</groupId>
+	    <artifactId>mssql-jdbc</artifactId>
 	</dependency>
 
   </dependencies>

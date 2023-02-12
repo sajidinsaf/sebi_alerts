@@ -1,0 +1,1 @@
+java -cp sebi-alerts.jar;;mssql-jdbc-12.2.0.jre8.jar;lib/* com.visibleai.sebi.Main config.properties

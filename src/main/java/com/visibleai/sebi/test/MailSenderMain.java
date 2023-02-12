@@ -1,4 +1,4 @@
-package com.visibleai.sebi;
+package com.visibleai.sebi.test;
 
 import java.io.FileReader;
 import java.util.Properties;

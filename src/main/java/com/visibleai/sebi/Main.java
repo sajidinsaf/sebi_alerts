@@ -15,39 +15,40 @@ import com.visibleai.sebi.util.DateUtil;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
-        Properties properties = new Properties();
-        String configFilePath = Constants.DEFAULT_CONFIG_FILE_PATH;
+  public static void main(String[] args) throws Exception {
 
-        if (args != null && args.length > 0) {
-            configFilePath = args[0];
-        }
+    System.out.println("Alerts report system starting");
 
-        FileReader fileReader = new FileReader(configFilePath);
+    Properties properties = new Properties();
+    String configFilePath = Constants.DEFAULT_CONFIG_FILE_PATH;
 
-        System.out.println("Running report generation from base directory: " + new File(".").getAbsolutePath());
-
-        properties.load(fileReader);
-
-        Orchestrator orchestrator = new Orchestrator(properties, new DateUtil());
-
-        String visitorEntrySource = properties.getProperty(Constants.VISITOR_ENTRY_SOURCE);
-
-        List<VisitorEntry> visitorEntries = new ArrayList<VisitorEntry>();
-
-        if (visitorEntrySource.equals("db")) {
-            VisitorEntryDatabaseReader databaseReader = new VisitorEntryDatabaseReader();
-            databaseReader.getVisitorEntries(properties);
-            visitorEntries = databaseReader.getVisitorEntries(properties);
-        } else {
-            VisitorEntryFileReader readFile = new VisitorEntryFileReader();
-            readFile.getVisitorEntries(properties);
-            visitorEntries = readFile.getVisitorEntries(properties);
-        }
-
-        orchestrator.generateReports(visitorEntries);
-        ;
-
+    if (args != null && args.length > 0) {
+      configFilePath = args[0];
     }
+
+    FileReader fileReader = new FileReader(configFilePath);
+
+    properties.load(fileReader);
+
+    System.out.println("Loaded configuration properties: " + properties);
+
+    System.out.println("Running report generation from base directory: " + new File(".").getAbsolutePath());
+
+    Orchestrator orchestrator = new Orchestrator(properties, new DateUtil());
+
+    String visitorEntrySource = properties.getProperty(Constants.VISITOR_ENTRY_SOURCE,
+        Constants.DEFAULT_VISITOR_ENTRY_SOURCE);
+
+    List<VisitorEntry> visitorEntries = new ArrayList<VisitorEntry>();
+
+    if (visitorEntrySource.equals(Constants.VISITOR_ENTRY_SOURCE_DB)) {
+      visitorEntries = new VisitorEntryDatabaseReader().getVisitorEntries(properties);
+    } else {
+      visitorEntries = new VisitorEntryFileReader().getVisitorEntries(properties);
+    }
+
+    orchestrator.generateReports(visitorEntries);
+
+  }
 
 }

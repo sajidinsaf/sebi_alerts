@@ -1,5 +1,7 @@
-package com.visibleai.sebi.db.test;
+package com.visibleai.sebi.test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,12 +20,19 @@ public class DBConn {
   public static void main(String[] args) {
     Properties config = new Properties();
     try {
-      config.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
+      config.load(new FileInputStream(new File(args[0])));
       String url = config.getProperty(Constants.PROPERTY_VAMS_DB_URL);
+      System.out.println("DB URL: " + url);
       String user = config.getProperty(Constants.PROPERTY_VAMS_DB_USER);
+      System.out.println("DB USER: " + user);
       String password = config.getProperty(Constants.PROPERTY_VAMS_DB_PASSWORD);
       String query = config.getProperty(Constants.PROPERTY_VAMS_DB_QUERY);
+      System.out.println("DB Query: " + query);
       try {
+        if (config.getProperty(Constants.PROPERTY_JDBC_DRIVER_CLASS) == null) {
+          throw new RuntimeException("Cannot proceed without JDBC Driver. Please specify it with config property"
+              + Constants.PROPERTY_JDBC_DRIVER_CLASS);
+        }
         Class.forName(config.getProperty(Constants.PROPERTY_JDBC_DRIVER_CLASS));
         Connection connection = DriverManager.getConnection(url, user, password);
         System.out.println("Connection to the database is Successful" + url);
