@@ -73,4 +73,9 @@ public class VisitorAlertsController {
         return "index";
     }
 
+    @GetMapping(value = "/reports")
+    public String reports() {
+        return "reports";
+    }
+
 }
