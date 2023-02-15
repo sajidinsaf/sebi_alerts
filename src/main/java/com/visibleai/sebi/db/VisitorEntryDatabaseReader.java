@@ -88,6 +88,9 @@ public class VisitorEntryDatabaseReader {
                 String timeInString = new DateUtil().asString(time_in, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
                 visitorEntry.setTimeIn(timeInString);
                 String timeOutString = new DateUtil().asString(time_out, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
+                if (timeOutString == null) {
+                    timeOutString = timeInString;
+                }
                 visitorEntry.setTimeOut(timeOutString);
                 String visitDurationString = Integer.toString(visit_duration);
                 visitorEntry.setVisitDuration(visitDurationString);
