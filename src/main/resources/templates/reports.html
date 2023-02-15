@@ -7,14 +7,10 @@
    <body>
       <h4>SEBI Alerts Reports</h4>
       <label for="start">Start date:</label>
-      <input type="date" id="start" name="trip-start"
-         value="2018-07-22"
-         min="2018-01-01">
+      <form action="#" th:action="@{/list}" th:object="${requestReportsForm}" method="POST">
+      <input type="date" th:field="*{startDate}" value="2022-07-22" min="2022-01-01">
       <label for="end">End date:</label>
-      <input type="date" id="end" name="trip-end"
-         value="2018-07-22"
-         min="2018-01-01">
-      <form action="/list" method="POST">
+      <input type="date" th:field="*{endDate}" value="2022-07-22" min="2022-01-01">
          <input type="submit"/>
       </form>
    </body>

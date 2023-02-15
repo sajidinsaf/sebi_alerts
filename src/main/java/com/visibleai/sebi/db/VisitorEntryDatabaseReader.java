@@ -2,9 +2,9 @@ package com.visibleai.sebi.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +13,7 @@ import java.util.Properties;
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.util.DateUtil;
+import com.visibleai.sebi.web.model.RequestReportsForm;
 
 public class VisitorEntryDatabaseReader {
 
@@ -42,9 +43,14 @@ public class VisitorEntryDatabaseReader {
             Connection connection = DriverManager.getConnection(url, user, password);
             System.out.println("Connection to the database is Successful" + url);
             String query = properties.getProperty(Constants.PROPERTY_VAMS_DB_QUERY);
-            Statement statement = connection.createStatement();
 
-            ResultSet resultset = statement.executeQuery(query);
+            RequestReportsForm requestReportsForm = (RequestReportsForm) properties.get(Constants.PROPERTY_REPORT_FORM);
+
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setDate(1, requestReportsForm.getStartDate());
+            pstmt.setDate(2, requestReportsForm.getEndDate());
+
+            ResultSet resultset = pstmt.executeQuery();
 
             while (resultset.next()) {
                 VisitorEntry visitorEntry = new VisitorEntry();
@@ -105,7 +111,7 @@ public class VisitorEntryDatabaseReader {
 
                 visitorEntries.add(visitorEntry);
             }
-            statement.close();
+            pstmt.close();
             connection.close();
         } catch (SQLException throwables) {
             // TODO Auto-generated catch block
