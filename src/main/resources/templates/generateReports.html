@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <title>Home page</title>
+      <meta charset="UTF-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <link href = "css/styles.css" rel = "stylesheet"/>
+   </head>
+   <body>
+      <p>
+         <!-- <span th:text="List of Visitor Entries"></span> -->
+      </p>
+      <div th:if="${ not#lists.isEmpty(reportFiles)}">
+         <p>The following reports have been successfully generated</p>
+         <table>
+            <tr>
+               <th>File Name</th>
+            </tr>
+            <tr th:each="file : ${reportFiles}">
+               <td th:text="${file.name}"></td>
+            </tr>
+         </table>
+      </div>
+      <div th:if="${ not#lists.isEmpty(reportsNotGenerated)}">
+         <p>The following reports have not been generated</p>
+         <table>
+            <tr>
+               <th>File Name</th>
+            </tr>
+            <tr th:each="fileNotGenerated : ${reportsNotGenerated}">
+               <td th:text="${fileNotGenerated.name}"></td>
+            </tr>
+         </table>
+      </div>
+   </body>
+</html>

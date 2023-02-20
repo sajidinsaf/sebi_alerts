@@ -14,6 +14,8 @@ import com.visibleai.sebi.db.VisitorEntryDatabaseReader;
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Orchestrator;
+import com.visibleai.sebi.report.ReportGenerationResult;
+import com.visibleai.sebi.test.MailSenderMain;
 import com.visibleai.sebi.util.DateUtil;
 import com.visibleai.sebi.web.model.RequestReportsForm;
 
@@ -31,7 +33,9 @@ public class ThymeLeafController {
             @Value("${vams.db.password}") String password, @Value("${vams.db.user}") String user,
             @Value("${vams.db.url}") String url, @Value("${broker.list.file}") String brokerList,
             @Value("${govt.org.list.file}") String governmentOrgList, @Value("${visitor.list.file}") String visitorList,
-            @Value("${employee.match.list.file}") String employeeMatchList) throws IOException {
+            @Value("${employee.match.list.file}") String employeeMatchList,
+            @Value("${entry.datetime.format}") String visitorEntryDateTimeFormat,
+            @Value("${report.out.file.path}") String visitorEntryReportOutputFilePath) throws IOException {
 
         System.out.println(brokerList);
 
@@ -46,16 +50,23 @@ public class ThymeLeafController {
         properties.put(Constants.PROPERTY_GOVT_ORG_LIST_FILE, governmentOrgList);
         properties.put(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE, visitorList);
         properties.put(Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE, employeeMatchList);
+        properties.put(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, visitorEntryDateTimeFormat);
+        properties.put(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH, visitorEntryReportOutputFilePath);
 
         VisitorEntryDatabaseReader vedr = new VisitorEntryDatabaseReader();
 
         List<VisitorEntry> visitorEntries = vedr.getVisitorEntries(properties);
         model.addAttribute("visitorEntries", visitorEntries);
         Orchestrator orchestrator = new Orchestrator(properties, new DateUtil());
-        orchestrator.generateReports(visitorEntries);
 
-        System.out.println(requestReportsForm.getStartDate());
-        System.out.println(requestReportsForm.getEndDate());
+        ReportGenerationResult reportGenerationResult = orchestrator.generateReports(visitorEntries);
+
+        model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
+        model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
+
+        MailSenderMain mailSenderMain = new MailSenderMain();
+        properties.put(visitorEntryReportOutputFilePath, mailSenderMain);
+
         return "generateReports";
     }
 }

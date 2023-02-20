@@ -2,8 +2,8 @@ package com.visibleai.sebi.report;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -33,12 +33,13 @@ public class Orchestrator {
 
     }
 
-    public void generateReports(List<VisitorEntry> visitorEntries) throws IOException {
+    public ReportGenerationResult generateReports(List<VisitorEntry> visitorEntries) {
 
         String dateFormat = properties.getProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT);
         Date startDate = new Date();
         Date endDate = null;
-
+        List<File> reportFiles = new ArrayList<File>();
+        List<File> reportsNotGenerated = new ArrayList<File>();
         // For each visitor entry do the validations
         for (int i = 0; i < visitorEntries.size(); i++) {
 
@@ -63,17 +64,26 @@ public class Orchestrator {
         String reportGenerationDate = dateUtil.asString(new Date(), "MMM-dd-yyyy");
         for (ReportBuilder reportBuilder : reportBuilders) {
 
-            Report report = reportBuilder.getReport();
-            String reportOutputFilePath = properties.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
+            File reportFile = new File(reportBuilder.getClass().getName());
+            try {
+                Report report = reportBuilder.getReport();
+                String reportOutputFilePath = properties.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
 
-            File reportFile = new File(reportOutputFilePath + System.getProperty("file.separator")
-                    + reportGenerationDate + "_" + report.getFileName());
-            PrintStream printStream = new PrintStream(reportFile);
-            reportPrinter.print(report, printStream);
-            printStream.flush();
-            printStream.close();
+                reportFile = new File(reportOutputFilePath + System.getProperty("file.separator") + reportGenerationDate
+                        + "_" + report.getFileName());
+                PrintStream printStream = new PrintStream(reportFile);
+                reportPrinter.print(report, printStream);
+                printStream.flush();
+                printStream.close();
+
+                reportFiles.add(reportFile);
+            } catch (Exception e) {
+                reportsNotGenerated.add(reportFile);
+            }
         }
 
+        ReportGenerationResult reportGenerationResult = new ReportGenerationResult(reportFiles, reportsNotGenerated);
+        return reportGenerationResult;
     }
 
 }
