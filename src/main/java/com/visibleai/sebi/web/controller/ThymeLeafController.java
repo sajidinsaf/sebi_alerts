@@ -59,6 +59,8 @@ public class ThymeLeafController {
         properties.put(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, visitorEntryDateTimeFormat);
         properties.put(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH, reportOutputFilePath);
 
+        System.out.println(requestReportsForm);
+
         VisitorEntryDatabaseReader vedr = new VisitorEntryDatabaseReader();
 
         List<VisitorEntry> visitorEntries = vedr.getVisitorEntries(properties);
