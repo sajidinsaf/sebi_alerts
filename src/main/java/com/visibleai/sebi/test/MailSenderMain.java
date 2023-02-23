@@ -1,7 +1,12 @@
 package com.visibleai.sebi.test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -39,10 +44,11 @@ public class MailSenderMain {
 
         properties.load(fileReader);
 
-        sendMail(properties);
+        MailSenderMain mailSenderMain = new MailSenderMain();
+        mailSenderMain.sendMail(properties);
     }
 
-    private static void sendMail(Properties config) {
+    public void sendMail(Properties config) {
 
         String host = config.getProperty(Constants.PROPERTY_MAIL_SMTP_SERVER);
         String port = config.getProperty(Constants.PROPERTY_MAIL_SMTP_PORT);
@@ -58,6 +64,7 @@ public class MailSenderMain {
         String mailText = config.getProperty(Constants.PROPERTY_MAIL_TEXT);
 
         Properties prop = new Properties();
+
         prop.put("mail.smtp.host", host);
         prop.put("mail.smtp.port", port);
         prop.put("mail.smtp.auth", auth);
@@ -83,24 +90,58 @@ public class MailSenderMain {
             message.setSubject(mailSubject);
             message.setText(mailText);
 
+            File reportFile = zip(config);
+
             MimeBodyPart messageBodyPart = new MimeBodyPart();
-            String filename = "/Users/aarishois/Applications/Development/Projects/sebi_alerts/src/main/resources/application.properties";
-            DataSource source = new FileDataSource(filename);
-            messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(filename);
             MimeMultipart multipart = new MimeMultipart();
+            DataSource source = new FileDataSource(reportFile);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(reportFile.getName());
             multipart.addBodyPart(messageBodyPart);
 
             message.setContent(multipart);
 
             Transport.send(message);
 
-            System.out.println("Done");
+            System.out.println("Mail Sent");
 
         } catch (MessagingException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private File zip(Properties config) {
+
+        try {
+            File reportsDirectory = new File(config.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH));
+            File reportsZip = new File(reportsDirectory + System.getProperty("file.separator") + "AlertReports.zip");
+            final FileOutputStream fos = new FileOutputStream(reportsZip);
+            ZipOutputStream zipOut = new ZipOutputStream(fos);
+
+            for (File reportFile : reportsDirectory.listFiles()) {
+                if (!reportFile.getName().endsWith(".csv")) {
+                    continue;
+                }
+
+                FileInputStream fis = new FileInputStream(reportFile);
+                ZipEntry zipEntry = new ZipEntry(reportFile.getName());
+                zipOut.putNextEntry(zipEntry);
+
+                byte[] bytes = new byte[1024];
+                int length;
+                while ((length = fis.read(bytes)) >= 0) {
+                    zipOut.write(bytes, 0, length);
+                }
+                fis.close();
+            }
+
+            zipOut.close();
+            fos.close();
+            return reportsZip;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

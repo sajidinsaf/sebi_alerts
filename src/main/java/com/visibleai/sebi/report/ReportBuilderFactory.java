@@ -43,7 +43,6 @@ public class ReportBuilderFactory {
         ReportBuilder monthvisitFrequencyReportBuilder;
 
         String brokerCompanyListFile = properties.getProperty(Constants.PROPERTY_BROKER_LIST_FILE);
-        System.out.println(brokerCompanyListFile);
         String govtOrgListFile = properties.getProperty(Constants.PROPERTY_GOVT_ORG_LIST_FILE);
         String employeeMatchListFile = properties.getProperty(Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE);
         String visitorMatchListFile = properties.getProperty(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE);

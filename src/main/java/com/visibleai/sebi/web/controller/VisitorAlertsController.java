@@ -1,5 +1,6 @@
 package com.visibleai.sebi.web.controller;
 
+import java.io.File;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +59,7 @@ public class VisitorAlertsController {
 
     @GetMapping(value = "/reports")
     public String reports(Model model) {
+        System.out.println(new File(".").getAbsolutePath());
         model.addAttribute("requestReportsForm", new RequestReportsForm());
         return "reports";
     }

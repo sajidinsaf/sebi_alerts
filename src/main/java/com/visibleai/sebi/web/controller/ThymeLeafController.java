@@ -1,5 +1,6 @@
 package com.visibleai.sebi.web.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -35,10 +36,15 @@ public class ThymeLeafController {
             @Value("${govt.org.list.file}") String governmentOrgList, @Value("${visitor.list.file}") String visitorList,
             @Value("${employee.match.list.file}") String employeeMatchList,
             @Value("${entry.datetime.format}") String visitorEntryDateTimeFormat,
-            @Value("${report.out.file.path}") String visitorEntryReportOutputFilePath) throws IOException {
+            @Value("${report.out.file.path}") String reportOutputFilePath,
+            @Value("${mail.smtp.server}") String mailServer, @Value("${mail.smtp.port}") String mailPort,
+            @Value("${mail.ssl.port}") String mailSSLPort, @Value("${mail.smtp.auth}") String mailAuth,
+            @Value("${mail.start.tls.enable}") String mailTLSEnable, @Value("${mail.username}") String mailUsername,
+            @Value("${mail.password}") String mailPassword, @Value("${mail.from.address}") String mailFromAddress,
+            @Value("${mail.to.addresses}") String mailToAddress, @Value("${mail.subject}") String mailSubject,
+            @Value("${mail.text}") String mailText) throws IOException {
 
-        System.out.println(brokerList);
-
+        System.out.println(new File(".").getAbsolutePath());
         Properties properties = new Properties();
         properties.put(Constants.PROPERTY_VAMS_DB_QUERY, query);
         properties.put(Constants.PROPERTY_JDBC_DRIVER_CLASS, driver);
@@ -51,7 +57,7 @@ public class ThymeLeafController {
         properties.put(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE, visitorList);
         properties.put(Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE, employeeMatchList);
         properties.put(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, visitorEntryDateTimeFormat);
-        properties.put(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH, visitorEntryReportOutputFilePath);
+        properties.put(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH, reportOutputFilePath);
 
         VisitorEntryDatabaseReader vedr = new VisitorEntryDatabaseReader();
 
@@ -65,7 +71,20 @@ public class ThymeLeafController {
         model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
 
         MailSenderMain mailSenderMain = new MailSenderMain();
-        properties.put(visitorEntryReportOutputFilePath, mailSenderMain);
+        properties.put(Constants.PROPERTY_MAIL_SMTP_SERVER, mailServer);
+        properties.put(Constants.PROPERTY_MAIL_SMTP_PORT, mailPort);
+        properties.put(Constants.PROPERTY_MAIL_SSL_PORT, mailSSLPort);
+        properties.put(Constants.PROPERTY_MAIL_SMTP_AUTH, "true");
+        properties.put(Constants.PROPERTY_MAIL_START_TLS_ENABLE, "true");
+        properties.put(Constants.PROPERTY_MAIL_SERVER_USERNAME, mailUsername);
+        properties.put(Constants.PROPERTY_MAIL_SERVER_PASSWORD, mailPassword);
+        properties.put(Constants.PROPERTY_MAIL_FROM_ADDRESS, mailFromAddress);
+        properties.put(Constants.PROPERTY_MAIL_TO_ADDRESSES, mailToAddress);
+
+        properties.put(Constants.PROPERTY_MAIL_SUBJECT, mailSubject);
+        properties.put(Constants.PROPERTY_MAIL_TEXT, mailText);
+
+        mailSenderMain.sendMail(properties);
 
         return "generateReports";
     }
