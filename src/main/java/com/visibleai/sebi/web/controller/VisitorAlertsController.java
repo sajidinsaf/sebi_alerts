@@ -2,7 +2,9 @@ package com.visibleai.sebi.web.controller;
 
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,15 @@ public class VisitorAlertsController {
 
   @Value("${run.mode}")
   String runMode;
+
+  @Autowired
+  private JdbcTemplate vamsJdbcTemplate;
+
+  @Autowired
+  private VisitorEntryDatabaseReader visitorEntryDatabaseReader;
+
+  @Autowired
+  private TestDataLoader testDataLoader;
 
   @GetMapping("/")
   public String homePage(Model model) {
@@ -63,8 +74,8 @@ public class VisitorAlertsController {
 
   @GetMapping(value = "/reports")
   public String reports(Model model) {
-    if (runMode == null || runMode.equals("test")) {
-      new TestDataLoader().loadTestData();
+    if (runMode != null && runMode.equals("test")) {
+      testDataLoader.loadTestData(vamsJdbcTemplate);
     }
     model.addAttribute("requestReportsForm", new RequestReportsForm());
     return "reports";
@@ -82,8 +93,7 @@ public class VisitorAlertsController {
     properties.put(Constants.PROPERTY_VAMS_DB_USER, user);
     properties.put(Constants.PROPERTY_VAMS_DB_URL, url);
 
-    VisitorEntryDatabaseReader vedr = new VisitorEntryDatabaseReader();
-    model.addAttribute("visitorEntries", vedr.getVisitorEntries(properties));
+    model.addAttribute("visitorEntries", visitorEntryDatabaseReader.getVisitorEntries(properties));
     return "list";
   }
 

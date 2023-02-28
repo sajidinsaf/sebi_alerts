@@ -20,7 +20,12 @@ public class DatabaseConfig {
   private Environment env;
 
   @Bean
-  public DataSource dataSource() {
+  public JdbcTemplate vamsJdbcTemplate(@Autowired DataSource vamsDataSource) {
+    return new JdbcTemplate(vamsDataSource);
+  }
+
+  @Bean
+  public DataSource vamsDataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
     dataSource.setDriverClassName(env.getProperty(Constants.PROPERTY_JDBC_DRIVER_CLASS));
     dataSource.setUrl(env.getProperty(Constants.PROPERTY_VAMS_DB_URL));
