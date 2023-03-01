@@ -115,13 +115,13 @@ public class ReportBuilderFactory {
             reportBuilders.add(twoWeekVisitFrequencyReportBuilder);
         }
 
-        if (reportsToGenerate.contains("monthvisitFrequencyReportBuilder")) {
+        if (reportsToGenerate.contains("monthVisitFrequencyReportBuilder")) {
             String fileNamePrefix = "VisitorFrequencyCheckReport-";
             String fileNameSuffix = "_days.csv";
-            ReportBuilder monthvisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9,
+            ReportBuilder monthVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9,
                     fileNamePrefix + "30" + fileNameSuffix,
                     visitFrequencyCheckFactory.getVisitFrequencyCheck(properties, 30, 9));
-            reportBuilders.add(monthvisitFrequencyReportBuilder);
+            reportBuilders.add(monthVisitFrequencyReportBuilder);
         }
 
         return reportBuilders;
