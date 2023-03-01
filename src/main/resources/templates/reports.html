@@ -17,6 +17,61 @@
          }
          
       </script>
+      
+      <script language="JavaScript">
+      window.onload = function(){
+      
+      var generateBrokerReport = document.getElementById("generateBrokerReport");
+      var brokerListFile = document.getElementById("brokerListFile");
+      
+      var generateEmployeeWatchReport = document.getElementById("generateEmployeeWatchReport");
+      var employeeWatchListFile = document.getElementById("employeeWatchListFile");
+      
+      var generateGovtReport = document.getElementById("generateGovtReport");
+      var governmentListFile = document.getElementById("governmentListFile");
+      
+      var generateVisitorWatchListReport = document.getElementById("generateVisitorWatchListReport");
+      var visitorWatchListFile = document.getElementById("visitorWatchListFile");
+      
+      generateBrokerReport.onchange = function (){
+      if(this.checked){
+        brokerListFile.disabled = false;
+      }
+      }
+      
+      generateEmployeeWatchReport.onchange = function (){
+      if(this.checked){
+        employeeWatchListFile.disabled = false;
+      }
+      }
+      
+      generateGovtReport.onchange = function (){
+      if(this.checked){
+        governmentListFile.disabled = false;
+      }
+      }
+      
+      generateVisitorWatchListReport.onchange = function (){
+      if(this.checked){
+        visitorWatchListFile.disabled = false;
+      }
+      }
+      
+      }
+      
+      </script>
+      
+      
+      
+        <script th:src="@{assets/custom-file-input/bs-custom-file-input.js}"></script>
+        <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+       
+        <script>
+            bsCustomFileInput.init();
+        </script>
+       
    </head>
    <body style="font-family:Verdana">
       <table>
@@ -27,7 +82,7 @@
       </table>
       <hr/>
       <br/><br/>
-      <form action="#" th:action="@{/generateReports}" th:object="${requestReportsForm}" method="POST">
+      <form action="#" th:action="@{/generateReports}" th:object="${requestReportsForm}" method="POST" enctype="multipart/form-data">
          <table style="border:0;width:60%;margin-left:20%">
             <tr>
                <td style="text-align:right;width:20%"><label for="start">Select Start Date:</label></td>
@@ -54,19 +109,32 @@
             </tr>            
             <tr>
                <td colspan="1"><input type="checkbox" id="generateBrokerReport" name="generateBrokerReport"/></td>
-               <td colspan="3"><label for="generateBrokerReport">Broker List Report</label></td>
+               <td colspan="2"><label for="generateBrokerReport">Broker List Report</label></td>
+               <td colspan="1">
+                    <input type="file" class="custom-file-input" id="brokerListFile" name="brokerListFile" disabled="true">
+                </td>
+            
             </tr>
             <tr>
                <td colspan="1"><input type="checkbox" id="generateEmployeeWatchReport" name="generateEmployeeWatchReport"/></td>
-               <td colspan="3"><label for="generateEmployeeWatchReport">Employee Watch List Report</label></td>
+               <td colspan="2"><label for="generateEmployeeWatchReport">Employee Watch List Report</label></td>
+               <td colspan="1">
+                  <input type="file" class="custom-file-input" id="employeeWatchListFile" name="employeeWatchListFile" disabled="true">
+               </td>
             </tr>
             <tr>
                <td colspan="1"><input type="checkbox" id="generateGovtReport" name="generateGovtReport"/></td>
-               <td colspan="3"><label for="generateGovtReport">Government Visitor Report</label></td>
+               <td colspan="2"><label for="generateGovtReport">Government Visitor Report</label></td>
+               <td colspan="1">
+                  <input type="file" class="custom-file-input" id="governmentListFile" name="governmentListFile" disabled="true">
+               </td>
             </tr>
             <tr>
                <td colspan="1"><input type="checkbox" id="generateVisitorWatchListReport" name="generateVisitorWatchListReport"/></td>
-               <td colspan="3"><label for="generateVisitorWatchListReport">Visitor Watch List Report</label></td>
+               <td colspan="2"><label for="generateVisitorWatchListReport">Visitor Watch List Report</label></td>
+               <td colspan="1">
+                 <input type="file" class="custom-file-input" id="visitorWatchListFile" name="visitorWatchListFile" disabled="true">
+               </td>
             </tr>
             <tr>
                <td colspan="1"><input type="checkbox" id="generateFreqencyCheck7" name="generateFreqencyCheck7"/></td>
@@ -83,7 +151,8 @@
             <tr>
                <td colspan="1"><input type="checkbox" id="generateOutOfOfficeHoursReport" name="generateOutOfOfficeHoursReport"/></td>
                <td colspan="3"><label for="generateOutOfOfficeHoursReport">Out of Office Hours Report</label></td>
-            </tr>            
+            </tr>
+           
             <tr >
                <td colspan="3"/>
                <td style="text-align:left"> <input  style="font-size:120%" type="submit" id="submitButton" disabled="true"/> </td>
