@@ -47,6 +47,7 @@ public class ThymeLeafController {
       @Value("${mail.username}") String mailUsername, @Value("${mail.password}") String mailPassword,
       @Value("${mail.from.address}") String mailFromAddress, @Value("${mail.to.addresses}") String mailToAddress,
       @Value("${mail.subject}") String mailSubject, @Value("${mail.text}") String mailText,
+      @Value("${server.type}") String serverType,
       @RequestParam(name = "generateBrokerReportListFile", required = false) MultipartFile brokerListFile,
       @RequestParam(name = "generateEmployeeWatchReportListFile", required = false) MultipartFile employeeWatchListFile,
       @RequestParam(name = "generateGovtReportListFile", required = false) MultipartFile governmentListFile,
@@ -66,7 +67,7 @@ public class ThymeLeafController {
     properties.put(Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE, employeeMatchList);
     properties.put(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, visitorEntryDateTimeFormat);
     properties.put(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH, reportOutputFilePath);
-
+    properties.put(Constants.PROPERTY_SERVER_TYPE, serverType);
 //    System.out.println(requestReportsForm);
 
     setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
@@ -107,7 +108,7 @@ public class ThymeLeafController {
     }
 
     if (employeeWatchListFile != null) {
-      properties.put(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE, employeeWatchListFile);
+      properties.put(Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE, employeeWatchListFile);
     }
 
     if (governmentListFile != null) {

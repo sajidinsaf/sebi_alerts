@@ -1,13 +1,10 @@
 package com.visibleai.sebi.report;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.report.builder.ListCheckReportBuilder;
@@ -15,6 +12,9 @@ import com.visibleai.sebi.report.builder.MediaVisitorReportBuilder;
 import com.visibleai.sebi.report.builder.OutOfOfficeHoursReportBuilder;
 import com.visibleai.sebi.report.builder.ReportBuilder;
 import com.visibleai.sebi.report.builder.VisitFrequencyReportBuilder;
+import com.visibleai.sebi.report.fileloader.FileLoader;
+import com.visibleai.sebi.report.fileloader.LocalFileLoader;
+import com.visibleai.sebi.report.fileloader.MultipartFileLoader;
 import com.visibleai.sebi.util.DateUtil;
 import com.visibleai.sebi.validation.CompanyMatchValidator;
 import com.visibleai.sebi.validation.EmployeeMatchValidator;
@@ -28,9 +28,14 @@ public class ReportBuilderFactory {
   private DateUtil dateUtil;
   private VisitFrequencyCheckFactory visitFrequencyCheckFactory;
 
+  private Map<String, FileLoader> fileLoaders;
+
   public ReportBuilderFactory(DateUtil dateUtil, VisitFrequencyCheckFactory visitFrequencyCheckFactory) {
     this.dateUtil = dateUtil;
     this.visitFrequencyCheckFactory = visitFrequencyCheckFactory;
+    fileLoaders = new HashMap<>();
+    fileLoaders.put("web", new MultipartFileLoader());
+    fileLoaders.put("standalone", new LocalFileLoader());
   }
 
   public List<ReportBuilder> createReportBuilders(Properties properties) {
@@ -39,14 +44,16 @@ public class ReportBuilderFactory {
 
     List<String> reportsToGenerate = new ReportSelectUtil().getReportClassNames(reportsForm);
 
-    System.out.println(reportsToGenerate);
+    // System.out.println(reportsToGenerate);
 
     List<ReportBuilder> reportBuilders = new ArrayList<>();
 
+    FileLoader fileLoader = fileLoaders.get(properties.getProperty(Constants.PROPERTY_SERVER_TYPE));
+
     if (reportsToGenerate.contains("brokerListCheckReportBuilder")) {
-      MultipartFile brokerCompanyListFile = (MultipartFile) properties.get(Constants.PROPERTY_BROKER_LIST_FILE);
+
       ListCheckValidator brokerCompanyMatchValidator = new CompanyMatchValidator(
-          loadListFromFile(brokerCompanyListFile));
+          fileLoader.loadFileLines(properties, Constants.PROPERTY_BROKER_LIST_FILE));
 
       ReportBuilder brokerListCheckReportBuilder = new ListCheckReportBuilder(brokerCompanyMatchValidator,
           "Broker Visitor Report", "BrokerVisitorReport.csv");
@@ -55,8 +62,8 @@ public class ReportBuilderFactory {
 
     if (reportsToGenerate.contains("govtListCheckReportBuilder")) {
 
-      MultipartFile govtOrgListFile = (MultipartFile) properties.get(Constants.PROPERTY_GOVT_ORG_LIST_FILE);
-      ListCheckValidator govtOrgMatchValidator = new CompanyMatchValidator(loadListFromFile(govtOrgListFile));
+      ListCheckValidator govtOrgMatchValidator = new CompanyMatchValidator(
+          fileLoader.loadFileLines(properties, Constants.PROPERTY_GOVT_ORG_LIST_FILE));
 
       ReportBuilder govtListCheckReportBuilder = new ListCheckReportBuilder(govtOrgMatchValidator,
           "Government Visitor Report", "GovtVisitorReport.csv");
@@ -66,8 +73,8 @@ public class ReportBuilderFactory {
 
     if (reportsToGenerate.contains("visitorListCheckReportBuilder")) {
 
-      MultipartFile visitorMatchListFile = (MultipartFile) properties.get(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE);
-      ListCheckValidator visitorMatchValidator = new VisitorMatchValidator(loadListFromFile(visitorMatchListFile));
+      ListCheckValidator visitorMatchValidator = new VisitorMatchValidator(
+          fileLoader.loadFileLines(properties, Constants.PROPERTY_VISITOR_MATCH_LIST_FILE));
 
       ReportBuilder visitorListCheckReportBuilder = new ListCheckReportBuilder(visitorMatchValidator,
           "Visitor Watch List Report", "VisitorWatchListReport.csv");
@@ -76,9 +83,8 @@ public class ReportBuilderFactory {
     }
 
     if (reportsToGenerate.contains("employeesListCheckReportBuilder")) {
-
-      MultipartFile employeeMatchListFile = (MultipartFile) properties.get(Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE);
-      ListCheckValidator employeeMatchValidator = new EmployeeMatchValidator(loadListFromFile(employeeMatchListFile));
+      ListCheckValidator employeeMatchValidator = new EmployeeMatchValidator(
+          fileLoader.loadFileLines(properties, Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE));
 
       ReportBuilder employeesListCheckReportBuilder = new ListCheckReportBuilder(employeeMatchValidator,
           "Employees Watch List Report", "EmployeeWatchListReport.csv");
@@ -121,26 +127,6 @@ public class ReportBuilderFactory {
     }
 
     return reportBuilders;
-  }
-
-  private List<String> loadListFromFile(MultipartFile file) {
-
-    try {
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-      List<String> list = new ArrayList<>();
-
-      String line = null;
-
-      while ((line = bufferedReader.readLine()) != null) {
-        list.add(line);
-      }
-      bufferedReader.close();
-      return list;
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return new ArrayList<String>();
   }
 
 }

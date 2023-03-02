@@ -16,6 +16,17 @@
              }
          }
          
+         function allReportsFileCheck() {
+           document.getElementById("generateBrokerReport").checked = document.getElementById("generateAllReports").checked;
+           fileCheck(document.getElementById("generateBrokerReport"));
+           document.getElementById("generateEmployeeWatchReport").checked = document.getElementById("generateAllReports").checked;
+           fileCheck(document.getElementById("generateEmployeeWatchReport"));
+           document.getElementById("generateGovtReport").checked = document.getElementById("generateAllReports").checked;
+           fileCheck(document.getElementById("generateGovtReport"));
+           document.getElementById("generateVisitorWatchListReport").checked = document.getElementById("generateAllReports").checked;
+           fileCheck(document.getElementById("generateVisitorWatchListReport"));
+         }
+         
          function fileCheck(srcElement){
         
            let uploadFileButtonName = srcElement.name+"ListFile";
@@ -37,22 +48,22 @@
          function validate() {
          
            let errorLabel = document.getElementById("errorLabel");
-           if (document.getElementById("generateBrokerReport").checked
+           if ((document.getElementById("generateAllReports").checked || document.getElementById("generateBrokerReport").checked)
               && document.getElementById("generateBrokerReportListFile").files.length == 0) {
               errorLabel.innerHTML = "Broker list file must be specified if All Reports or Broker Report is selected";
               event.preventDefault();
            }
-           if (document.getElementById("generateEmployeeWatchReport").checked
+           if ((document.getElementById("generateAllReports").checked || document.getElementById("generateEmployeeWatchReport").checked)
               && document.getElementById("generateEmployeeWatchReportListFile").files.length == 0) {
               errorLabel.innerHTML = "Employee Watch list file must be specified if All Reports or Employee Watch Report is selected";
               event.preventDefault();
            }
-           if (document.getElementById("generateGovtReport").checked
+           if ((document.getElementById("generateAllReports").checked || document.getElementById("generateGovtReport").checked)
               && document.getElementById("generateGovtReportListFile").files.length == 0) {
               errorLabel.innerHTML = "Government Org list file must be specified if All Reports or Government Visitor Report is selected";
               event.preventDefault();
            }
-           if (document.getElementById("generateVisitorWatchListReport").checked
+           if ((document.getElementById("generateAllReports").checked || document.getElementById("generateVisitorWatchListReport").checked)
               && document.getElementById("generateVisitorWatchListReportListFile").files.length == 0) {
               errorLabel.innerHTML = "Visitor Watch list file must be specified if All Reports or Visitor Watch Report is selected";
               event.preventDefault();
@@ -72,7 +83,7 @@
    <body style="font-family:Verdana">
       <table>
          <tr style="border:0;width:100%">
-            <td style="width:5%"> <img th:src="@{/SEBI_logo.jpg}"/> </td>
+            <td style="width:5%"><a href="/api/vea/reports"> <img th:src="@{/SEBI_logo.jpg}"/></a> </td>
             <td style="width:95%;text-align:center;font-family:Verdana;font-size:200%"> Visitor Alerts Reports </td>
          </tr>
       </table>
@@ -97,7 +108,7 @@
                </td>
             </tr>
             <tr>
-               <td colspan="1" style="text-align:right"><input type="checkbox" id="generateAllReports" name="generateAllReports" /></td>
+               <td colspan="1" style="text-align:right"><input type="checkbox" id="generateAllReports" name="generateAllReports" onChange="allReportsFileCheck()" /></td>
                <td colspan="7" style="text-align:left"><label for="generateAllReports">All Reports</label></td>
             <tr/>
             <tr rowspan="2">
