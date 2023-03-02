@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.visibleai.sebi.db.VisitorEntryDatabaseReader;
+import com.visibleai.sebi.mail.MailSenderMain;
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Orchestrator;
 import com.visibleai.sebi.report.ReportGenerationResult;
-import com.visibleai.sebi.test.MailSenderMain;
 import com.visibleai.sebi.util.DateUtil;
 import com.visibleai.sebi.web.model.RequestReportsForm;
 
@@ -67,7 +67,10 @@ public class ThymeLeafController {
     properties.put(Constants.PROPERTY_ENTRY_DATETIME_FORMAT, visitorEntryDateTimeFormat);
     properties.put(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH, reportOutputFilePath);
 
-    System.out.println(brokerListFile);
+//    System.out.println(requestReportsForm);
+
+    setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
+
     List<VisitorEntry> visitorEntries = visitorEntryDatabaseReader.getVisitorEntries(properties);
     model.addAttribute("visitorEntries", visitorEntries);
     Orchestrator orchestrator = new Orchestrator(properties, new DateUtil());
@@ -94,5 +97,26 @@ public class ThymeLeafController {
     mailSenderMain.sendMail(properties);
 
     return "generateReports";
+  }
+
+  private void setFiles(Properties properties, MultipartFile brokerListFile, MultipartFile employeeWatchListFile,
+      MultipartFile governmentListFile, MultipartFile visitorWatchListFile) {
+
+    if (brokerListFile != null) {
+      properties.put(Constants.PROPERTY_BROKER_LIST_FILE, brokerListFile);
+    }
+
+    if (employeeWatchListFile != null) {
+      properties.put(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE, employeeWatchListFile);
+    }
+
+    if (governmentListFile != null) {
+      properties.put(Constants.PROPERTY_GOVT_ORG_LIST_FILE, governmentListFile);
+    }
+
+    if (visitorWatchListFile != null) {
+      properties.put(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE, visitorWatchListFile);
+    }
+
   }
 }

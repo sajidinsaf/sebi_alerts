@@ -20,8 +20,8 @@ import com.visibleai.sebi.web.model.RequestReportsForm;
 
 //@RestController
 @Controller
-// svea - sebi visitor entry alerts
-@RequestMapping("/api/svea")
+// vea - visitor entry alerts
+@RequestMapping("/api/vea")
 public class VisitorAlertsController {
 
   @Value("${spring.application.name}")
