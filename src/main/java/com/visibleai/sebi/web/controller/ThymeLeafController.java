@@ -21,6 +21,7 @@ import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Orchestrator;
 import com.visibleai.sebi.report.ReportGenerationResult;
+import com.visibleai.sebi.report.job.JobController;
 import com.visibleai.sebi.test.db.TestDataLoader;
 import com.visibleai.sebi.util.DateUtil;
 import com.visibleai.sebi.web.model.RequestReportsForm;
@@ -40,6 +41,12 @@ public class ThymeLeafController {
 
   @Autowired
   private TestDataLoader testDataLoader;
+
+  @Autowired
+  private JobController jobController;
+
+  @Autowired
+  private DateUtil dateUtil;
 
   @RequestMapping(value = "/")
   public String index() {
@@ -96,7 +103,7 @@ public class ThymeLeafController {
 
     List<VisitorEntry> visitorEntries = visitorEntryDatabaseReader.getVisitorEntries(properties);
     model.addAttribute("visitorEntries", visitorEntries);
-    Orchestrator orchestrator = new Orchestrator(properties, new DateUtil());
+    Orchestrator orchestrator = new Orchestrator(properties, dateUtil, jobController);
 
     ReportGenerationResult reportGenerationResult = orchestrator.generateReports(visitorEntries);
 

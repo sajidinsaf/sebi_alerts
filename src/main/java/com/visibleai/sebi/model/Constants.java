@@ -9,6 +9,8 @@ public abstract class Constants {
   public static final String DEFAULT_VISITOR_ENTRY_SOURCE = VISITOR_ENTRY_SOURCE_FILE;
 
   public static final String DEFAULT_VISITOR_ENTRY_DATE_FORMAT = "dd MMM yyyy hh:mma";
+  public static final String JOB_ID_DEFAULT_DATE_FORMAT = "yyyyMMddhhmmss";
+
   public static final String BROKERS_LIST_FILE = Constants.class.getClassLoader().getResource("BrokerList.txt")
       .getFile();
   public static final String GOVT_ORGS_FILE = Constants.class.getClassLoader().getResource("GovtOrgList.txt").getFile();
