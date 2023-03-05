@@ -83,13 +83,13 @@
    <body style="font-family:Verdana">
       <table>
          <tr style="border:0;width:100%">
-            <td style="width:5%"><a href="/api/vea/reports"> <img th:src="@{/SEBI_logo.jpg}"/></a> </td>
+            <td style="width:5%"><a href="/"> <img th:src="@{/SEBI_logo.jpg}"/></a> </td>
             <td style="width:95%;text-align:center;font-family:Verdana;font-size:200%"> Visitor Alerts Reports </td>
          </tr>
       </table>
-      <hr/>
+      <hr style="margin-left:20%;margin-right:20%;"/>
       <br/><br/>
-      <form action="#" th:action="@{/generateReports}" th:object="${requestReportsForm}" method="POST" enctype="multipart/form-data">
+      <form action="#" th:action="@{/api/vea/generateReports}" th:object="${requestReportsForm}" method="POST" enctype="multipart/form-data">
          <table style="border:0;width:60%;margin-left:20%">
             <tr>
                <td colspan="1"/>
@@ -203,10 +203,11 @@
          </table>
       </form>
       <br/> <br/>
-      <hr/>
-      <table style="margin-top:5%;margin-left:80%">
-      <tr>
-         <td>&#169; AREA KPI Technology </td>
-      </tr>
+      <hr style="margin-left:20%;margin-right:20%;"/>
+      <table style="border:0px;margin-top:5%;margin-left:80%">
+	      <tr>
+	         <td>&#169; AREA KPI Technology </td>
+	      </tr>
+      </table>
    </body>
 </html>

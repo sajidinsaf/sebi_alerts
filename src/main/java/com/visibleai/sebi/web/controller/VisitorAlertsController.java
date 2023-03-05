@@ -4,7 +4,6 @@ import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.visibleai.sebi.db.VisitorEntryDatabaseReader;
 import com.visibleai.sebi.model.Constants;
-import com.visibleai.sebi.test.db.TestDataLoader;
 import com.visibleai.sebi.web.model.RequestReportsForm;
 
 //@RestController
@@ -27,28 +25,19 @@ public class VisitorAlertsController {
   @Value("${spring.application.name}")
   String appName;
 
-  @Value("${run.mode}")
-  String runMode;
-
-  @Autowired
-  private JdbcTemplate vamsJdbcTemplate;
-
   @Autowired
   private VisitorEntryDatabaseReader visitorEntryDatabaseReader;
 
-  @Autowired
-  private TestDataLoader testDataLoader;
-
-  @GetMapping("/")
-  public String homePage(Model model) {
-    model.addAttribute("appName", appName);
-    return "home: " + appName;
-  }
-
-  @GetMapping("/hi/{name}")
-  public String hello(@PathVariable String name) {
-    return "hello " + name;
-  }
+//  @GetMapping("/")
+//  public String homePage(Model model) {
+//    model.addAttribute("appName", appName);
+//    return "index: " + appName;
+//  }
+//
+//  @GetMapping("/hi/{name}")
+//  public String hello(@PathVariable String name) {
+//    return "home " + name;
+//  }
 
   @GetMapping("/calc/{data}")
   public int getTotal(@PathVariable String data) {
@@ -70,15 +59,6 @@ public class VisitorAlertsController {
     }
 
     return Integer.MIN_VALUE;
-  }
-
-  @GetMapping(value = "/reports")
-  public String reports(Model model) {
-    if (runMode != null && runMode.equals("test")) {
-      testDataLoader.loadTestData(vamsJdbcTemplate);
-    }
-    model.addAttribute("requestReportsForm", new RequestReportsForm());
-    return "reports";
   }
 
   @PostMapping(value = "/list")

@@ -6,8 +6,10 @@ import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,18 +21,38 @@ import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Orchestrator;
 import com.visibleai.sebi.report.ReportGenerationResult;
+import com.visibleai.sebi.test.db.TestDataLoader;
 import com.visibleai.sebi.util.DateUtil;
 import com.visibleai.sebi.web.model.RequestReportsForm;
 
 @Controller
+@RequestMapping("/api/vea")
 public class ThymeLeafController {
 
   @Autowired
   private VisitorEntryDatabaseReader visitorEntryDatabaseReader;
 
-  @RequestMapping(value = "/index")
+  @Value("${run.mode}")
+  String runMode;
+
+  @Autowired
+  private JdbcTemplate vamsJdbcTemplate;
+
+  @Autowired
+  private TestDataLoader testDataLoader;
+
+  @RequestMapping(value = "/")
   public String index() {
     return "index";
+  }
+
+  @GetMapping(value = "/reports")
+  public String reports(Model model) {
+    if (runMode != null && runMode.equals("test")) {
+      testDataLoader.loadTestData(vamsJdbcTemplate);
+    }
+    model.addAttribute("requestReportsForm", new RequestReportsForm());
+    return "reportsForm";
   }
 
   @RequestMapping(value = "/generateReports")

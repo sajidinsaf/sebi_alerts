@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
    <head>
-      <title>Home page</title>
+      <title>Alert Reports Form</title>
       <meta charset="UTF-8"/>
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <link href = "css/styles.css" rel = "stylesheet"/>
+ <!--     <link href = "css/styles.css" rel = "stylesheet"/> -->
    </head>
    <body>
       <table>
-         <tr style="border:0;width:100%">
-            <td style="width:5%"><a href="/api/vea/reports"> <img th:src="@{/SEBI_logo.jpg}"/></a> </td>
+         <tr style="border:0px;width:100%">
+            <td style="width:5%"><a href="/"> <img th:src="@{/SEBI_logo.jpg}"/></a> </td>
             <td style="width:95%;text-align:center;font-family:Verdana;font-size:200%"> Visitor Alerts Reports </td>
          </tr>
       </table>
-      <hr/>
+      <hr style="margin-left:20%;margin-right:20%;"/>
       <br/><br/>
       <p>
          <!-- <span th:text="List of Visitor Entries"></span> -->
       </p>
-      <div th:if="${ not#lists.isEmpty(reportFiles)}">
+      <div style="margin-left:25%;margin-right:25%" th:if="${ not#lists.isEmpty(reportFiles)}">
          <p>The following reports have been successfully generated</p>
-         <table>
+         <table style="border:3px">
             <tr>
                <th>File Name</th>
             </tr>
@@ -29,9 +29,9 @@
             </tr>
          </table>
       </div>
-      <div th:if="${ not#lists.isEmpty(reportsNotGenerated)}">
+      <div style="margin-left:25%;margin-right:25%" th:if="${ not#lists.isEmpty(reportsNotGenerated)}">
          <p>The following reports have not been generated</p>
-         <table>
+         <table style="border:3px">
             <tr>
                <th>File Name</th>
             </tr>
@@ -40,9 +40,19 @@
             </tr>
          </table>
       </div>
+      <div style="margin-left:25%;margin-right:25%;margin-top:5%" >
+
+	      <a href="/api/vea/reports">Generate more Reports</a>
+	      <br/>
+	      <br/>
+          <a href="/">Back to Home Page</a>
+      </div>
+      <hr style="margin-left:20%;margin-right:20%;margin-top:10%"/>
       
-      <br/>
-      <br/>
-      <a href="/api/vea/reports">Back to Home Page</a>
+      <table style="border:0px;margin-top:10%;margin-left:80%">
+	      <tr>
+	         <td>&#169; AREA KPI Technology </td>
+	      </tr>
+      </table>
    </body>
 </html>
