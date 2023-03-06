@@ -56,7 +56,7 @@ public class ReportBuilderFactory {
           fileLoader.loadFileLines(properties, Constants.PROPERTY_BROKER_LIST_FILE));
 
       ReportBuilder brokerListCheckReportBuilder = new ListCheckReportBuilder(brokerCompanyMatchValidator,
-          "Broker Visitor Report", "BrokerVisitorReport.csv");
+          "Broker Visitor Report", "BrokerVisitorReport.csv", "BrokerVisitorReportBuilder");
       reportBuilders.add(brokerListCheckReportBuilder);
     }
 
@@ -66,7 +66,7 @@ public class ReportBuilderFactory {
           fileLoader.loadFileLines(properties, Constants.PROPERTY_GOVT_ORG_LIST_FILE));
 
       ReportBuilder govtListCheckReportBuilder = new ListCheckReportBuilder(govtOrgMatchValidator,
-          "Government Visitor Report", "GovtVisitorReport.csv");
+          "Government Visitor Report", "GovtVisitorReport.csv", "GovernmentVisitorReportBuilder");
 
       reportBuilders.add(govtListCheckReportBuilder);
     }
@@ -77,7 +77,7 @@ public class ReportBuilderFactory {
           fileLoader.loadFileLines(properties, Constants.PROPERTY_VISITOR_MATCH_LIST_FILE));
 
       ReportBuilder visitorListCheckReportBuilder = new ListCheckReportBuilder(visitorMatchValidator,
-          "Visitor Watch List Report", "VisitorWatchListReport.csv");
+          "Visitor Watch List Report", "VisitorWatchListReport.csv", "VisitorWatchListReportBuilder");
 
       reportBuilders.add(visitorListCheckReportBuilder);
     }
@@ -87,7 +87,7 @@ public class ReportBuilderFactory {
           fileLoader.loadFileLines(properties, Constants.PROPERTY_EMPLOYEE_MATCH_LIST_FILE));
 
       ReportBuilder employeesListCheckReportBuilder = new ListCheckReportBuilder(employeeMatchValidator,
-          "Employees Watch List Report", "EmployeeWatchListReport.csv");
+          "Employees Watch List Report", "EmployeeWatchListReport.csv", "EmployeesWatchListReportBuilde");
 
       reportBuilders.add(employeesListCheckReportBuilder);
     }

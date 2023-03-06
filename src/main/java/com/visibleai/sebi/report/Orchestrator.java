@@ -56,6 +56,9 @@ public class Orchestrator {
           e.printStackTrace();
           System.out.println("Error while reading visitor entry: [" + visitorEntry + "] with report builder: "
               + reportBuilder.getClass().getName() + " Exception message: " + e.getMessage());
+        } catch (Exception e) {
+          System.out.println("Failed to process visitor entry " + visitorEntry + " for report builder: "
+              + reportBuilder.getName() + " Exception message: " + e.getMessage());
         }
       }
 
