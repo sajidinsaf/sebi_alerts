@@ -50,10 +50,10 @@ public class OutOfOfficeHoursReportBuilder implements ReportBuilder {
 
   }
 
-  public Report getReport() {
+  public List<Report> getReports() {
 
     outOfOfficeHoursReport.setReportData(outOfOfficeHoursReportData);
-    return outOfOfficeHoursReport;
+    return Arrays.asList(outOfOfficeHoursReport);
   }
 
   public String getName() {

@@ -37,6 +37,7 @@ public class VisitorEntryDatabaseReader {
       }
     }, new VisitorEntryRowMapper());
 
+    System.out.println("Queried " + visitorEntries.size() + " visitor entries");
     return visitorEntries;
 
   }

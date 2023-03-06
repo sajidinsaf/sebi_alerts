@@ -44,9 +44,9 @@ public class MediaVisitorReportBuilder implements ReportBuilder {
     mediaVisitorReportData.addRow(row);
   }
 
-  public Report getReport() {
+  public List<Report> getReports() {
     mediaVisitorReport.setReportData(mediaVisitorReportData);
-    return mediaVisitorReport;
+    return Arrays.asList(mediaVisitorReport);
   }
 
   public String getName() {

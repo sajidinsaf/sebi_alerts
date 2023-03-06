@@ -47,7 +47,7 @@ public class ListCheckReportBuilderTest {
     isNonVisitorCompanyEntry.setAccessCardId("M-253");
     listCheckReportBuilder.build(isNonVisitorCompanyEntry);
 
-    Report listCheckReport = listCheckReportBuilder.getReport();
+    Report listCheckReport = listCheckReportBuilder.getReports().get(0);
     assertEquals(reportTitle, listCheckReport.getTitle());
 
     ReportData listCheckReportData = listCheckReport.getReportData();

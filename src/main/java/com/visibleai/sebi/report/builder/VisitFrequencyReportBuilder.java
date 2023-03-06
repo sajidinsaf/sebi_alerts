@@ -7,14 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Report;
 import com.visibleai.sebi.report.SebiAlertsReport;
 import com.visibleai.sebi.report.TableReportData;
 import com.visibleai.sebi.report.builder.model.FrequentVisitorDetail;
 import com.visibleai.sebi.validation.util.VisitFrequencyCheck;
 
-public class VisitFrequencyReportBuilder implements ReportBuilder {
+public class VisitFrequencyReportBuilder {
 
   private SebiAlertsReport visitFrequencyReport = null;
   private VisitFrequencyCheck visitFrequencyCheck;
@@ -36,8 +35,7 @@ public class VisitFrequencyReportBuilder implements ReportBuilder {
 
   }
 
-  public void build(VisitorEntry visitorEntry) {
-    FrequentVisitorDetail frequentVisitorDetail = new FrequentVisitorDetail(visitorEntry);
+  public void build(FrequentVisitorDetail frequentVisitorDetail) {
 
     // boolean visitFrequencyDayCheckResult =
     // visitFrequencyCheck.check(frequentVisitorDetail);
@@ -51,7 +49,7 @@ public class VisitFrequencyReportBuilder implements ReportBuilder {
 
   }
 
-  public Report getReport() {
+  public List<Report> getReports() {
 
     TableReportData visitFrequencyReportData = new TableReportData();
 
@@ -98,7 +96,7 @@ public class VisitFrequencyReportBuilder implements ReportBuilder {
 
     }
     visitFrequencyReport.setReportData(visitFrequencyReportData);
-    return visitFrequencyReport;
+    return Arrays.asList(visitFrequencyReport);
 
   }
 

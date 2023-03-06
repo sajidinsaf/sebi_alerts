@@ -53,9 +53,9 @@ public class ListCheckReportBuilder implements ReportBuilder {
     listCheckReportData.addRow(row);
   }
 
-  public Report getReport() {
+  public List<Report> getReports() {
     listCheckReport.setReportData(listCheckReportData);
-    return listCheckReport;
+    return Arrays.asList(listCheckReport);
   }
 
   public String getName() {

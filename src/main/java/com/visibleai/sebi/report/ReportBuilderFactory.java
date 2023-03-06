@@ -12,6 +12,7 @@ import com.visibleai.sebi.report.builder.MediaVisitorReportBuilder;
 import com.visibleai.sebi.report.builder.OutOfOfficeHoursReportBuilder;
 import com.visibleai.sebi.report.builder.ReportBuilder;
 import com.visibleai.sebi.report.builder.VisitFrequencyReportBuilder;
+import com.visibleai.sebi.report.builder.VisitFrequencyReportBuilderWrapper;
 import com.visibleai.sebi.report.fileloader.FileLoader;
 import com.visibleai.sebi.report.fileloader.LocalFileLoader;
 import com.visibleai.sebi.report.fileloader.MultipartFileLoader;
@@ -102,30 +103,34 @@ public class ReportBuilderFactory {
       reportBuilders.add(outOfOfficeHoursReportBuilder);
     }
 
+    List<VisitFrequencyReportBuilder> visitorFrequencyReportBuilders = new ArrayList<>();
+
     if (reportsToGenerate.contains("weekVisitFrequencyReportBuilder")) {
       String fileNamePrefix = "VisitorFrequencyCheckReport-";
       String fileNameSuffix = "_days.csv";
-      ReportBuilder weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3,
+      VisitFrequencyReportBuilder weekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(7, 3,
           fileNamePrefix + "7" + fileNameSuffix, visitFrequencyCheckFactory.getVisitFrequencyCheck(properties, 7, 3));
-      reportBuilders.add(weekVisitFrequencyReportBuilder);
+      visitorFrequencyReportBuilders.add(weekVisitFrequencyReportBuilder);
+
     }
 
     if (reportsToGenerate.contains("twoWeekVisitFrequencyReportBuilder")) {
       String fileNamePrefix = "VisitorFrequencyCheckReport-";
       String fileNameSuffix = "_days.csv";
-      ReportBuilder twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6,
+      VisitFrequencyReportBuilder twoWeekVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(14, 6,
           fileNamePrefix + "14" + fileNameSuffix, visitFrequencyCheckFactory.getVisitFrequencyCheck(properties, 14, 6));
-      reportBuilders.add(twoWeekVisitFrequencyReportBuilder);
+      visitorFrequencyReportBuilders.add(twoWeekVisitFrequencyReportBuilder);
     }
 
     if (reportsToGenerate.contains("monthVisitFrequencyReportBuilder")) {
       String fileNamePrefix = "VisitorFrequencyCheckReport-";
       String fileNameSuffix = "_days.csv";
-      ReportBuilder monthVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9,
+      VisitFrequencyReportBuilder monthVisitFrequencyReportBuilder = new VisitFrequencyReportBuilder(30, 9,
           fileNamePrefix + "30" + fileNameSuffix, visitFrequencyCheckFactory.getVisitFrequencyCheck(properties, 30, 9));
-      reportBuilders.add(monthVisitFrequencyReportBuilder);
+      visitorFrequencyReportBuilders.add(monthVisitFrequencyReportBuilder);
     }
 
+    reportBuilders.add(new VisitFrequencyReportBuilderWrapper(visitorFrequencyReportBuilders));
     return reportBuilders;
   }
 

@@ -1,12 +1,15 @@
 package com.visibleai.sebi.web.controller;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +22,7 @@ import com.visibleai.sebi.db.VisitorEntryDatabaseReader;
 import com.visibleai.sebi.mail.MailSenderMain;
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
-import com.visibleai.sebi.report.Orchestrator;
+import com.visibleai.sebi.report.DatabaseOrchestrator;
 import com.visibleai.sebi.report.ReportGenerationResult;
 import com.visibleai.sebi.report.job.JobController;
 import com.visibleai.sebi.test.db.TestDataLoader;
@@ -102,10 +105,20 @@ public class ThymeLeafController {
     setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
 
     List<VisitorEntry> visitorEntries = visitorEntryDatabaseReader.getVisitorEntries(properties);
-    model.addAttribute("visitorEntries", visitorEntries);
-    Orchestrator orchestrator = new Orchestrator(properties, dateUtil, jobController);
+    // model.addAttribute("visitorEntries", visitorEntries);
 
-    ReportGenerationResult reportGenerationResult = orchestrator.generateReports(visitorEntries);
+    DatabaseOrchestrator orchestrator = new DatabaseOrchestrator(properties, dateUtil, jobController);
+    vamsJdbcTemplate.query(query, new PreparedStatementSetter() {
+      public void setValues(PreparedStatement pstmt) throws SQLException {
+        pstmt.setDate(1, requestReportsForm.getStartDate());
+        pstmt.setDate(2, requestReportsForm.getEndDate());
+      }
+    }, orchestrator);
+
+    // Orchestrator orchestrator = new Orchestrator(properties, dateUtil,
+    // jobController);
+
+    ReportGenerationResult reportGenerationResult = orchestrator.finish();
 
     model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
     model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());

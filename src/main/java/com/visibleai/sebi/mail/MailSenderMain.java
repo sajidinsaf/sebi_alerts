@@ -51,6 +51,8 @@ public class MailSenderMain {
 
   public void sendMail(Properties config) {
 
+    File reportFile = zip(config);
+
     String host = config.getProperty(Constants.PROPERTY_MAIL_SMTP_SERVER);
     String port = config.getProperty(Constants.PROPERTY_MAIL_SMTP_PORT);
     String sslPort = config.getProperty(Constants.PROPERTY_MAIL_SSL_PORT);
@@ -97,8 +99,6 @@ public class MailSenderMain {
       message.setSubject(mailSubject);
       message.setText(mailText);
 
-      File reportFile = zip(config);
-
       MimeBodyPart messageBodyPart = new MimeBodyPart();
       MimeMultipart multipart = new MimeMultipart();
       DataSource source = new FileDataSource(reportFile);
@@ -121,8 +121,13 @@ public class MailSenderMain {
   private File zip(Properties config) {
 
     try {
-      File reportsDirectory = new File(config.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH));
-      File reportsZip = new File(reportsDirectory + System.getProperty("file.separator") + "AlertReports.zip");
+      String reportsBaseDirectory = config.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
+      String jobId = config.getProperty(Constants.PROPERTY_REPORT_JOB_ID);
+
+      File reportsDirectory = new File(reportsBaseDirectory + System.getProperty("file.separator") + jobId);
+
+      File reportsZip = new File(
+          reportsDirectory.getAbsolutePath() + System.getProperty("file.separator") + jobId + "_AlertReports.zip");
       final FileOutputStream fos = new FileOutputStream(reportsZip);
       ZipOutputStream zipOut = new ZipOutputStream(fos);
 

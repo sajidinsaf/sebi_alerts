@@ -31,9 +31,13 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
       String remarks = resultset.getString("remarks");
       Date time_in = new Date(resultset.getDate("time_in").getTime());
 
-      Date time_out = new Date(resultset.getDate("time_out").getTime());
+      Date time_out = resultset.getDate("time_out");
 
       int visit_duration = new Random().nextInt(5) + 1;
+
+      if (time_out == null) {
+        time_out = new Date(time_in.getTime() + (visit_duration * 60 * 60 * 1000));
+      }
       String logged_out = resultset.getString("logged_out");
       String host_l = resultset.getString("host_l");
       String pass_id = resultset.getString("pass_id");
@@ -74,6 +78,7 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
     } catch (Exception e) {
       System.out.println("Exception while creating visitor entry from database row: " + rowNum + ". Exception message: "
           + e.getMessage());
+      e.printStackTrace();
 
     }
     return visitorEntry;
