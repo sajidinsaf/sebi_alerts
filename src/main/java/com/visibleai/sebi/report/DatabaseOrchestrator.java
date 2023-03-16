@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
 import com.visibleai.sebi.db.VisitorEntryRowMapper;
@@ -23,6 +25,7 @@ import com.visibleai.sebi.util.DateUtil;
 import com.visibleai.sebi.validation.util.VisitFrequencyCheckFactory;
 
 public class DatabaseOrchestrator implements RowCallbackHandler {
+  private Logger logger = LoggerFactory.getLogger(DatabaseOrchestrator.class);
 
   private List<ReportBuilder> reportBuilders;
 
@@ -40,26 +43,29 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
 
   public DatabaseOrchestrator(Properties properties, DateUtil dateUtil, JobController jobController)
       throws FileNotFoundException {
-
-    reportBuilders = new ReportBuilderFactory(dateUtil, new VisitFrequencyCheckFactory(dateUtil))
-        .createReportBuilders(properties);
     this.properties = properties;
     this.dateUtil = dateUtil;
     this.jobController = jobController;
     visitorEntryRowMapper = new VisitorEntryRowMapper();
+
+    buildReportsDir(properties);
+    reportBuilders = new ReportBuilderFactory(dateUtil, new VisitFrequencyCheckFactory(dateUtil))
+        .createReportBuilders(properties);
+
   }
 
   private boolean buildReports(VisitorEntry visitorEntry) {
 
     String dateFormat = properties.getProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT);
 
-    System.out.println("Generating Reports");
+    // System.out.println("Generating Reports");
     // For each visitor entry do the validations
 
     for (ReportBuilder reportBuilder : reportBuilders) {
       try {
-        System.out
-            .println("Processing visitor entry" + visitorEntry + " for report builder: " + reportBuilder.getName());
+        // System.out
+        // .println("Processing visitor entry" + visitorEntry + " for report builder: "
+        // + reportBuilder.getName());
         reportBuilder.build(visitorEntry);
       } catch (RuntimeException e) {
         e.printStackTrace();
@@ -84,10 +90,8 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
 
     List<File> reportFiles = new ArrayList<File>();
     List<File> reportsNotGenerated = new ArrayList<File>();
-
+    String reportDir = properties.getProperty(Constants.PROPERTY_REPORT_JOB_DIR);
     ReportPrinter reportPrinter = new SebiAlertsReportPrinter(startDate, endDate, dateUtil);
-
-    String reportDir = buildReportsDir(properties).getAbsolutePath() + System.getProperty("file.separator");
 
     for (ReportBuilder reportBuilder : reportBuilders) {
 
@@ -97,7 +101,7 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
 
       for (Report report : reports) {
         try {
-          reportFile = new File(reportDir + report.getFileName());
+          reportFile = new File(reportDir + System.getProperty("file.separator") + report.getFileName());
           PrintStream printStream = new PrintStream(reportFile);
           reportPrinter.print(report, printStream);
           printStream.flush();
@@ -116,7 +120,7 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
     return reportGenerationResult;
   }
 
-  private File buildReportsDir(Properties properties2) {
+  private File buildReportsDir(Properties properties) {
     String reportOutputFilePath = properties.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
 
     String jobDir = jobController.getId(properties);
@@ -127,12 +131,14 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
 
     File file = new File(reportsJobDirPath);
     file.mkdir();
+    properties.put(Constants.PROPERTY_REPORT_JOB_DIR, reportsJobDirPath);
     return file;
   }
 
   @Override
   public void processRow(ResultSet rs) throws SQLException {
     VisitorEntry visitorEntry = visitorEntryRowMapper.mapRow(rs, ++rowNum);
+    // logger.trace("Processing row number: " + rowNum);
     buildReports(visitorEntry);
   }
 

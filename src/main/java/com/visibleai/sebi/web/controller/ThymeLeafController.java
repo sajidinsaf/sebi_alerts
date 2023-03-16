@@ -3,7 +3,6 @@ package com.visibleai.sebi.web.controller;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.visibleai.sebi.db.VisitorEntryDatabaseReader;
 import com.visibleai.sebi.mail.MailSenderMain;
 import com.visibleai.sebi.model.Constants;
-import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.DatabaseOrchestrator;
 import com.visibleai.sebi.report.ReportGenerationResult;
 import com.visibleai.sebi.report.job.JobController;
@@ -104,7 +102,8 @@ public class ThymeLeafController {
 
     setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
 
-    List<VisitorEntry> visitorEntries = visitorEntryDatabaseReader.getVisitorEntries(properties);
+    // List<VisitorEntry> visitorEntries =
+    // visitorEntryDatabaseReader.getVisitorEntries(properties);
     // model.addAttribute("visitorEntries", visitorEntries);
 
     DatabaseOrchestrator orchestrator = new DatabaseOrchestrator(properties, dateUtil, jobController);
@@ -127,8 +126,8 @@ public class ThymeLeafController {
     properties.put(Constants.PROPERTY_MAIL_SMTP_SERVER, mailServer);
     properties.put(Constants.PROPERTY_MAIL_SMTP_PORT, mailPort);
     properties.put(Constants.PROPERTY_MAIL_SSL_PORT, mailSSLPort);
-    properties.put(Constants.PROPERTY_MAIL_SMTP_AUTH, "true");
-    properties.put(Constants.PROPERTY_MAIL_START_TLS_ENABLE, "true");
+    properties.put(Constants.PROPERTY_MAIL_SMTP_AUTH, mailAuth);
+    properties.put(Constants.PROPERTY_MAIL_START_TLS_ENABLE, mailTLSEnable);
     properties.put(Constants.PROPERTY_MAIL_SERVER_USERNAME, mailUsername);
     properties.put(Constants.PROPERTY_MAIL_SERVER_PASSWORD, mailPassword);
     properties.put(Constants.PROPERTY_MAIL_FROM_ADDRESS, mailFromAddress);

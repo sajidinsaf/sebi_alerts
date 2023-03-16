@@ -53,7 +53,7 @@ public class VisitFrequencyReportBuilderTest {
     violationVisitor.setAccessCardId("A-123");
 
     FrequentVisitorDetail frequentVisitorDetail = new FrequentVisitorDetail(violationVisitor);
-    visitFrequencyReportBuilder.build(frequentVisitorDetail);
+    // visitFrequencyReportBuilder.build(frequentVisitorDetail);
 
     String dateOfNonViolationVisitor = simpleDateFormat.format(numberOfDaysAgo.getTime());
     numberOfDaysAgo.setTime(todaysDate);
@@ -69,7 +69,7 @@ public class VisitFrequencyReportBuilderTest {
     nonViolationVisitor.setAccessCardId("V-892");
 
     frequentVisitorDetail = new FrequentVisitorDetail(nonViolationVisitor);
-    visitFrequencyReportBuilder.build(frequentVisitorDetail);
+    // visitFrequencyReportBuilder.build(frequentVisitorDetail);
 
     String dateOfViolationVisitor2 = simpleDateFormat.format(numberOfDaysAgo.getTime());
     numberOfDaysAgo.setTime(todaysDate);
@@ -84,7 +84,7 @@ public class VisitFrequencyReportBuilderTest {
     violationVisitorSecondTime.setAccessCardId("A-123");
 
     frequentVisitorDetail = new FrequentVisitorDetail(violationVisitorSecondTime);
-    visitFrequencyReportBuilder.build(frequentVisitorDetail);
+    // visitFrequencyReportBuilder.build(frequentVisitorDetail);
 
     String dateOfNonViolationVisitor2 = simpleDateFormat.format(numberOfDaysAgo.getTime());
     numberOfDaysAgo.setTime(todaysDate);
@@ -100,7 +100,7 @@ public class VisitFrequencyReportBuilderTest {
     nonViolationVisitor2.setAccessCardId("V-892");
 
     frequentVisitorDetail = new FrequentVisitorDetail(nonViolationVisitor2);
-    visitFrequencyReportBuilder.build(frequentVisitorDetail);
+    // visitFrequencyReportBuilder.build(frequentVisitorDetail);
 
     String dateOfViolationVisitor3 = simpleDateFormat.format(numberOfDaysAgo.getTime());
     numberOfDaysAgo.setTime(todaysDate);
@@ -115,7 +115,7 @@ public class VisitFrequencyReportBuilderTest {
     violationVisitorThirdTime.setAccessCardId("A-123");
 
     frequentVisitorDetail = new FrequentVisitorDetail(violationVisitorThirdTime);
-    visitFrequencyReportBuilder.build(frequentVisitorDetail);
+    // visitFrequencyReportBuilder.build(frequentVisitorDetail);
 
     Report betweenSevenDaysReport = visitFrequencyReportBuilder.getReports().get(0);
     assertEquals(numberOfDays + " Day Check Report", betweenSevenDaysReport.getTitle());

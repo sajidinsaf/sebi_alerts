@@ -18,7 +18,9 @@ public class VisitFrequencyCheckFactory {
       int frequencyViolationNumber) {
     String entryDateFormat = properties.getProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT,
         Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
-    PermutationsUtil permutationsUtil = new PermutationsUtil(dateUtil, entryDateFormat);
+    VisitDatesPermutationsFilter visitDatesPermutationsFilter = new VisitDatesPermutationsFilter(properties, dateUtil,
+        numberOfDaysInThisPeriod, frequencyViolationNumber);
+    PermutationsUtil permutationsUtil = new PermutationsUtil(dateUtil, entryDateFormat, visitDatesPermutationsFilter);
 
     FrequentVisitsDateFilter frequentVisitsDateFilter = new FrequentVisitsDateFilter(new DateComparator());
 

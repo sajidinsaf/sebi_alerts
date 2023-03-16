@@ -21,10 +21,15 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.web.model.RequestReportsForm;
 
 public class MailSenderMain {
+
+  private final Logger logger = LoggerFactory.getLogger(MailSenderMain.class);
 
   public MailSenderMain() {
     // TODO Auto-generated constructor stub
@@ -50,8 +55,11 @@ public class MailSenderMain {
   }
 
   public void sendMail(Properties config) {
+    logger.debug("Reading mail settings from properties: " + config);
 
+    logger.debug("Creating reports zip file");
     File reportFile = zip(config);
+    logger.debug("Created reports zip file: " + reportFile.getAbsolutePath());
 
     String host = config.getProperty(Constants.PROPERTY_MAIL_SMTP_SERVER);
     String port = config.getProperty(Constants.PROPERTY_MAIL_SMTP_PORT);
@@ -62,11 +70,20 @@ public class MailSenderMain {
     String password = config.getProperty(Constants.PROPERTY_MAIL_SERVER_PASSWORD);
     String mailFrom = config.getProperty(Constants.PROPERTY_MAIL_FROM_ADDRESS);
 
-    String mailTo = config.getProperty(Constants.PROPERTY_MAIL_TO_ADDRESSES);
+    RequestReportsForm reportForm = (RequestReportsForm) config.get(Constants.PROPERTY_REPORT_FORM);
 
-    if (mailTo == null || mailTo.trim().equals("")) {
-      RequestReportsForm reportForm = (RequestReportsForm) config.get(Constants.PROPERTY_REPORT_FORM);
+    String mailTo = null;
+    if (reportForm != null) {
       mailTo = reportForm.getEmailTo();
+    } else {
+      mailTo = config.getProperty(Constants.PROPERTY_MAIL_TO_ADDRESSES);
+    }
+
+    if (mailTo == null) {
+      throw new IllegalArgumentException(
+          "Mail To address must be specficied through either the Web form or in the configuration properties with key: "
+              + Constants.PROPERTY_MAIL_TO_ADDRESSES);
+
     }
 
     String mailSubject = config.getProperty(Constants.PROPERTY_MAIL_SUBJECT);
@@ -79,7 +96,7 @@ public class MailSenderMain {
     prop.put("mail.smtp.auth", auth);
     prop.put("mail.smtp.starttls.enable", startTlsEnable); // TLS
 
-    if (sslPort != null) {
+    if (sslPort != null && !sslPort.trim().equals("")) {
       prop.put("mail.smtp.socketFactory.port", sslPort);
       prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
     }
@@ -110,7 +127,7 @@ public class MailSenderMain {
 
       Transport.send(message);
 
-      System.out.println("Mail Sent");
+      logger.debug("Mail Sent");
 
     } catch (MessagingException e) {
       e.printStackTrace();

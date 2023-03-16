@@ -1,11 +1,12 @@
 package com.visibleai.sebi.report.builder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.visibleai.sebi.report.Report;
 import com.visibleai.sebi.report.SebiAlertsReport;
@@ -14,6 +15,8 @@ import com.visibleai.sebi.report.builder.model.FrequentVisitorDetail;
 import com.visibleai.sebi.validation.util.VisitFrequencyCheck;
 
 public class VisitFrequencyReportBuilder {
+
+  private Logger logger = LoggerFactory.getLogger(VisitFrequencyReportBuilder.class);
 
   private SebiAlertsReport visitFrequencyReport = null;
   private VisitFrequencyCheck visitFrequencyCheck;
@@ -25,7 +28,7 @@ public class VisitFrequencyReportBuilder {
       VisitFrequencyCheck visitFrequencyCheck) {
 
     this.visitFrequencyCheck = visitFrequencyCheck;
-    visitFrequencyCheckMap = new HashMap<String, List<FrequentVisitorDetail>>();
+
     visitFrequencyReport = new SebiAlertsReport();
     visitFrequencyReport.setFileName(reportName);
     visitFrequencyReport.setTitle(numberOfDays + " Day Check Report");
@@ -34,28 +37,27 @@ public class VisitFrequencyReportBuilder {
     this.numberOfDays = numberOfDays;
 
   }
-
-  public void build(FrequentVisitorDetail frequentVisitorDetail) {
-
-    // boolean visitFrequencyDayCheckResult =
-    // visitFrequencyCheck.check(frequentVisitorDetail);
-
-    String phoneNumber = frequentVisitorDetail.getVisitorNumber();
-
-    List<FrequentVisitorDetail> frequentVisitorDetailList = visitFrequencyCheckMap.getOrDefault(phoneNumber,
-        new ArrayList<FrequentVisitorDetail>());
-    frequentVisitorDetailList.add(frequentVisitorDetail);
-    visitFrequencyCheckMap.put(phoneNumber, frequentVisitorDetailList);
-
-  }
+//
+//  public void build(FrequentVisitorDetail frequentVisitorDetail) {
+//
+//    // boolean visitFrequencyDayCheckResult =
+//    // visitFrequencyCheck.check(frequentVisitorDetail);
+//
+//
+//
+//  }
 
   public List<Report> getReports() {
+
+    logger.debug("Building report for " + numberOfDays + " days frequency check");
 
     TableReportData visitFrequencyReportData = new TableReportData();
 
     List<String> header = Arrays.asList("Phone Number", "Name", "Meeting with", "Date(Time In)", "Date(Time Out)",
         "Visitors Company", "Type Of Visitor", "Number of Visits", "Visit Period", "Comments");
     visitFrequencyReportData.setHeader(header);
+
+    logger.debug("Created report header");
 
     for (String phoneNumber : visitFrequencyCheckMap.keySet()) {
       List<FrequentVisitorDetail> frequentVisitorDetailList = visitFrequencyCheckMap.get(phoneNumber);
@@ -87,6 +89,8 @@ public class VisitFrequencyReportBuilder {
 
           List<String> row = Arrays.asList(phoneNumber, names, meetingsWith, visitDatesIn, visitDatesOut,
               visitorCompanies, typeOfVisitor, frequencyCount, visitFromTo, comments);
+          logger.debug("Created report row for " + numberOfDays + " days frequency check: " + row);
+
           visitFrequencyReportData.addRow(row);
           frequencyCount = "";
           visitFromTo = "";
@@ -102,5 +106,9 @@ public class VisitFrequencyReportBuilder {
 
   public String getName() {
     return "VisitFrequencyReportBuilder_" + numberOfDays + "days";
+  }
+
+  public void setVisitFrequencyCheckMap(Map<String, List<FrequentVisitorDetail>> visitFrequencyCheckMap) {
+    this.visitFrequencyCheckMap = visitFrequencyCheckMap;
   }
 }

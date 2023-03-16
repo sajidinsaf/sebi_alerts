@@ -130,7 +130,7 @@ public class ReportBuilderFactory {
       visitorFrequencyReportBuilders.add(monthVisitFrequencyReportBuilder);
     }
 
-    reportBuilders.add(new VisitFrequencyReportBuilderWrapper(visitorFrequencyReportBuilders));
+    reportBuilders.add(new VisitFrequencyReportBuilderWrapper(visitorFrequencyReportBuilders, properties));
     return reportBuilders;
   }
 

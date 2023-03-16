@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.Report;
 import com.visibleai.sebi.report.SebiAlertsReport;
@@ -11,7 +14,7 @@ import com.visibleai.sebi.report.TableReportData;
 import com.visibleai.sebi.validation.ListCheckValidator;
 
 public class ListCheckReportBuilder implements ReportBuilder {
-
+  private Logger logger = LoggerFactory.getLogger(ListCheckReportBuilder.class);
   private ListCheckValidator listCheckValidator;
 
   private SebiAlertsReport listCheckReport;

@@ -30,3 +30,4 @@ Reports.txt
 sebi-alerts
 sebi-alerts.zip
 /src/main/resources/application-local.properties
+src/main/resources/sample-visitor-record-8000.csv

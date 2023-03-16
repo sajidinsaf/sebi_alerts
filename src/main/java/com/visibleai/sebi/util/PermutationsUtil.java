@@ -6,16 +6,22 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.visibleai.sebi.model.Constants;
 
 public class PermutationsUtil {
 
+  private Logger logger = LoggerFactory.getLogger(PermutationsUtil.class);
   private DateUtil dateUtil;
   private String dateFormat;
+  private PermutationsFilter permutationsFilter;
 
-  public PermutationsUtil(DateUtil dateUtil, String dateFormat) {
+  public PermutationsUtil(DateUtil dateUtil, String dateFormat, PermutationsFilter permutationsFilter) {
     this.dateUtil = dateUtil;
     this.dateFormat = dateFormat;
+    this.permutationsFilter = permutationsFilter;
   }
 
   public static void main(String[] args) {
@@ -23,7 +29,14 @@ public class PermutationsUtil {
         new Date(2022, 10, 04) };
 
     PermutationsUtil permutationsUtil = new PermutationsUtil(new DateUtil(),
-        Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
+        Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT, new PermutationsFilter() {
+
+          @Override
+          public boolean include(String[] permutation) {
+            return true;
+          }
+
+        });
 
     List<String> permutations = permutationsUtil.uniquePermutationsForAllLengths(array);
 
@@ -54,9 +67,6 @@ public class PermutationsUtil {
     List<List<Date>> result = new ArrayList<>();
     for (String permutationsString : permutations) {
       String[] perumrationsArray = permutationsString.split(",");
-      if (perumrationsArray.length < minSize) {
-        continue;
-      }
       List<Date> datesList = new ArrayList<>();
       for (String dateString : perumrationsArray) {
         datesList.add(dateUtil.parseDate(dateString, dateFormat));
@@ -74,18 +84,22 @@ public class PermutationsUtil {
     List<String> result = new ArrayList<>();
     int lastIdx = array.length - 1;
     if (lastIdx >= 0) {
+      // if (permutationsFilter.include(format(array[lastIdx]).split(","))) {
       result.add(format(array[lastIdx]));
-
+      // }
       if (lastIdx > 0) {
         Date[] shorterArray = Arrays.copyOf(array, lastIdx);
         List<String> subResult = uniquePermutationsForAllLengths(shorterArray);
         result.addAll(subResult);
         for (String s : subResult) {
-          result.add(s + "," + format(array[lastIdx]));
+          String permutation = s + "," + format(array[lastIdx]);
+          if (permutationsFilter.include(permutation.split(","))) {
+            result.add(permutation);
+          }
         }
       }
     }
-
+    logger.debug("Created permutation: " + result);
     return result;
   }
 
