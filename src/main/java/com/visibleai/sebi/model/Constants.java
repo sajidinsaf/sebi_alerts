@@ -51,5 +51,7 @@ public abstract class Constants {
   public static final String PROPERTY_MAIL_TEXT = "mail.text";
 
   public static final String PROPERTY_SERVER_TYPE = "server.type";
+  public static final String PROPERTY_SERVER_TYPE_WEB = "web";
+  public static final String PROPERTY_SERVER_TYPE_LOCAL = "standalone";
 
 }

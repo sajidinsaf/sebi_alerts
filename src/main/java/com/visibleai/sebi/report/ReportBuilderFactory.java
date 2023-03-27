@@ -35,8 +35,8 @@ public class ReportBuilderFactory {
     this.dateUtil = dateUtil;
     this.visitFrequencyCheckFactory = visitFrequencyCheckFactory;
     fileLoaders = new HashMap<>();
-    fileLoaders.put("web", new MultipartFileLoader());
-    fileLoaders.put("standalone", new LocalFileLoader());
+    fileLoaders.put(Constants.PROPERTY_SERVER_TYPE_WEB, new MultipartFileLoader());
+    fileLoaders.put(Constants.PROPERTY_SERVER_TYPE_LOCAL, new LocalFileLoader());
   }
 
   public List<ReportBuilder> createReportBuilders(Properties properties) {

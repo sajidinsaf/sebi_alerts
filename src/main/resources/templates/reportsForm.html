@@ -17,6 +17,12 @@
          }
          
          function allReportsFileCheck() {
+           document.getElementById("generateMediaVisitorReport").checked = document.getElementById("generateAllReports").checked;
+           document.getElementById("generateFreqencyCheck7").checked = document.getElementById("generateAllReports").checked;
+           document.getElementById("generateFreqencyCheck14").checked = document.getElementById("generateAllReports").checked;
+           document.getElementById("generateFreqencyCheck30").checked = document.getElementById("generateAllReports").checked;
+           document.getElementById("generateOutOfOfficeHoursReport").checked = document.getElementById("generateAllReports").checked;
+
            document.getElementById("generateBrokerReport").checked = document.getElementById("generateAllReports").checked;
            fileCheck(document.getElementById("generateBrokerReport"));
            document.getElementById("generateEmployeeWatchReport").checked = document.getElementById("generateAllReports").checked;
