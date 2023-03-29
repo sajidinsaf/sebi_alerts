@@ -100,6 +100,16 @@ public class TestDataLoader {
 
   }
 
+  public void setupPeriodicData(JdbcTemplate jdbcTemplate) {
+    String[] phones = new String[] { "6416627339", "4186561535", "7506029416", "9049953883", "4791482699", "5787303822",
+        "2975098098", "7295583516", "7506029416", "3539890575" };
+    for (int i = 1; i <= 10; i++) {
+      String value = new DateUtil().asString(new Date(System.currentTimeMillis() - (i * 60)), "yyyy-MM-dd HH.mm.ss");
+      jdbcTemplate
+          .execute("update visitor_entry set time_in='" + value + "' where visitor_number='" + phones[i - 1] + "'");
+    }
+  }
+
   public static void main(String[] args) {
     JdbcTemplate jdbcTemplate = new DatabaseConfig().inMemJdbcTemplate();
     new TestDataLoader().loadTestData(jdbcTemplate);

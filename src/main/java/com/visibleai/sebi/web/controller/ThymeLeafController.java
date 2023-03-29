@@ -1,10 +1,15 @@
 package com.visibleai.sebi.web.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.Semaphore;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.visibleai.sebi.db.VisitorEntryDatabaseReader;
 import com.visibleai.sebi.mail.MailSenderMain;
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.report.DatabaseOrchestrator;
@@ -31,8 +35,7 @@ import com.visibleai.sebi.web.model.RequestReportsForm;
 @RequestMapping("/api/vea")
 public class ThymeLeafController {
 
-  @Autowired
-  private VisitorEntryDatabaseReader visitorEntryDatabaseReader;
+  private Logger logger = LoggerFactory.getLogger(ThymeLeafController.class);
 
   @Value("${run.mode}")
   String runMode;
@@ -96,6 +99,10 @@ public class ThymeLeafController {
   @Value("${server.type}")
   private String serverType;
 
+  // Periodic alert attributes
+  @Value("${periodic.alert.query}")
+  private String periodAlertVisitorEntriesQuery;
+
   @RequestMapping(value = "/")
   public String index() {
     return "index";
@@ -103,21 +110,23 @@ public class ThymeLeafController {
 
   @GetMapping(value = "/reports")
   public String reports(Model model) {
-    if (runMode != null && runMode.equals("test")) {
-      testDataLoader.loadTestData(vamsJdbcTemplate);
-    }
+    setupTestData(false);
     model.addAttribute("requestReportsForm", new RequestReportsForm());
     return "reportsForm";
   }
 
+  private Semaphore semaphore = new Semaphore(1);
+
   @RequestMapping(value = "/generateReports")
-  public String getVisitorEntries(@ModelAttribute RequestReportsForm requestReportsForm, Model model,
+  public String generateReports(@ModelAttribute RequestReportsForm requestReportsForm, Model model,
 
       @RequestParam(name = "generateBrokerReportListFile", required = false) MultipartFile brokerListFile,
       @RequestParam(name = "generateEmployeeWatchReportListFile", required = false) MultipartFile employeeWatchListFile,
       @RequestParam(name = "generateGovtReportListFile", required = false) MultipartFile governmentListFile,
       @RequestParam(name = "generateVisitorWatchListReportListFile", required = false) MultipartFile visitorWatchListFile)
       throws IOException {
+
+    aquireToken("on-demand");
 
     Properties properties = setUpProperties(requestReportsForm);
 //    System.out.println(requestReportsForm);
@@ -148,11 +157,56 @@ public class ThymeLeafController {
 
     mailSenderMain.sendMail(properties);
 
+    releaseToken("on-demand");
     return "generateReports";
   }
 
-  private void setFiles(Properties properties, MultipartFile brokerListFile, MultipartFile employeeWatchListFile,
-      MultipartFile governmentListFile, MultipartFile visitorWatchListFile) {
+  @RequestMapping(value = "/periodicAlerts")
+  public String periodicAlerts(Model model) throws IOException {
+
+    aquireToken("periodic");
+    setupTestData(true);
+
+    RequestReportsForm requestReportsForm = new RequestReportsForm();
+    requestReportsForm.setGenerateAllReports(true);
+
+    long today = System.currentTimeMillis();
+    long thirtyDaysBeforeToday = today - Constants.ONE_MONTH_IN_MILLISECONDS;
+
+    requestReportsForm.setStartDate(new Date(thirtyDaysBeforeToday));
+    requestReportsForm.setEndDate(new Date(today));
+    Properties properties = setUpProperties(requestReportsForm);
+//    System.out.println(requestReportsForm);
+
+    File brokerListFile = new File(brokerList);
+    File employeeWatchListFile = new File(employeeMatchList);
+    File governmentListFile = new File(governmentOrgList);
+    File visitorWatchListFile = new File(visitorList);
+
+    setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
+
+    properties.put(Constants.PROPERTY_SERVER_TYPE, Constants.PROPERTY_SERVER_TYPE_LOCAL);
+
+    DatabaseOrchestrator orchestrator = new DatabaseOrchestrator(properties, dateUtil, jobController);
+
+    vamsJdbcTemplate.query(periodAlertVisitorEntriesQuery, orchestrator);
+
+    ReportGenerationResult reportGenerationResult = orchestrator.finish();
+
+    model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
+    model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
+
+    requestReportsForm.setEmailTo(mailToAddress);
+
+    MailSenderMain mailSenderMain = new MailSenderMain();
+
+    mailSenderMain.sendMail(properties);
+    releaseToken("periodic");
+    return "generateReports";
+  }
+
+  private void setFiles(Properties properties, Object brokerListFile, Object employeeWatchListFile,
+      Object governmentListFile, Object visitorWatchListFile) {
 
     if (brokerListFile != null) {
       properties.put(Constants.PROPERTY_BROKER_LIST_FILE, brokerListFile);
@@ -179,7 +233,7 @@ public class ThymeLeafController {
     properties.put(Constants.PROPERTY_VAMS_DB_PASSWORD, password);
     properties.put(Constants.PROPERTY_VAMS_DB_USER, user);
     properties.put(Constants.PROPERTY_VAMS_DB_URL, url);
-    properties.put(Constants.PROPERTY_REPORT_FORM, requestReportsForm);
+
     properties.put(Constants.PROPERTY_BROKER_LIST_FILE, brokerList);
     properties.put(Constants.PROPERTY_GOVT_ORG_LIST_FILE, governmentOrgList);
     properties.put(Constants.PROPERTY_VISITOR_MATCH_LIST_FILE, visitorList);
@@ -201,6 +255,38 @@ public class ThymeLeafController {
 
     properties.put(Constants.PROPERTY_MAIL_SUBJECT, mailSubject);
     properties.put(Constants.PROPERTY_MAIL_TEXT, mailText);
+    properties.put(Constants.PROPERTY_REPORT_FORM, requestReportsForm);
     return properties;
+  }
+
+  private void aquireToken(String process) {
+    try {
+      if (logger.isDebugEnabled()) {
+        logger.debug("Acquiring semaphore for " + process + " reports");
+      }
+      semaphore.acquire();
+      if (logger.isDebugEnabled()) {
+        logger.debug("Semaphore acquired for " + process + " reports");
+      }
+    } catch (InterruptedException e) {
+      logger.warn("Semaphone acquistion interrupted. There may be a conflict between periodic and on-demand reports");
+    }
+  }
+
+  private void releaseToken(String process) {
+    logger.debug("Releasing semaphore for " + process + " reports");
+    semaphore.release();
+    logger.debug("Semaphore released for " + process + " reports");
+
+  }
+
+  private void setupTestData(boolean isPeriodic) {
+    if (runMode != null && runMode.equals("test")) {
+      testDataLoader.loadTestData(vamsJdbcTemplate);
+      if (isPeriodic) {
+        testDataLoader.setupPeriodicData(vamsJdbcTemplate);
+      }
+    }
+
   }
 }

@@ -54,4 +54,6 @@ public abstract class Constants {
   public static final String PROPERTY_SERVER_TYPE_WEB = "web";
   public static final String PROPERTY_SERVER_TYPE_LOCAL = "standalone";
 
+  public static final long ONE_MONTH_IN_MILLISECONDS = 2592000000l;
+
 }

@@ -11,7 +11,7 @@ public class LocalFileLoader implements FileLoader {
 
   @Override
   public List<String> loadFileLines(Properties config, String configPropertyName) {
-    String filePath = config.getProperty(configPropertyName);
+    String filePath = config.get(configPropertyName).toString();
     return loadListFromFile(filePath);
   }
 
