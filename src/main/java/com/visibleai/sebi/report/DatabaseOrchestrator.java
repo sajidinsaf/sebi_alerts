@@ -46,7 +46,7 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
     this.properties = properties;
     this.dateUtil = dateUtil;
     this.jobController = jobController;
-    visitorEntryRowMapper = new VisitorEntryRowMapper();
+    visitorEntryRowMapper = new VisitorEntryRowMapper(properties);
 
     buildReportsDir(properties);
     reportBuilders = new ReportBuilderFactory(dateUtil, new VisitFrequencyCheckFactory(dateUtil))
@@ -58,23 +58,21 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
 
     String dateFormat = properties.getProperty(Constants.PROPERTY_ENTRY_DATETIME_FORMAT);
 
-    // System.out.println("Generating Reports");
     // For each visitor entry do the validations
 
     for (ReportBuilder reportBuilder : reportBuilders) {
       try {
-        // System.out
-        // .println("Processing visitor entry" + visitorEntry + " for report builder: "
-        // + reportBuilder.getName());
+        if (logger.isDebugEnabled()) {
+          logger.debug("Processing visitor entry" + visitorEntry + " for report builder: " + reportBuilder.getName());
+        }
         reportBuilder.build(visitorEntry);
       } catch (RuntimeException e) {
-        e.printStackTrace();
-        System.out.println("Error while reading visitor entry: [" + visitorEntry + "] with report builder: "
-            + reportBuilder.getClass().getName() + " Exception message: " + e.getMessage());
+        logger.error("Error while reading visitor entry: [" + visitorEntry + "] with report builder: "
+            + reportBuilder.getClass().getName(), e);
         return false;
       } catch (Exception e) {
-        System.out.println("Failed to process visitor entry " + visitorEntry + " for report builder: "
-            + reportBuilder.getName() + " Exception message: " + e.getMessage());
+        logger.debug(
+            "Failed to process visitor entry " + visitorEntry + " for report builder: " + reportBuilder.getName(), e);
         return false;
       }
     }

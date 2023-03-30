@@ -62,6 +62,8 @@ public class ThymeLeafController {
   private String user;
   @Value("${vams.db.url}")
   private String url;
+  @Value("${vams.db.time.offset.in.hours}")
+  private String vamsDbTimeOffsetInHours;
   @Value("${broker.list.file}")
   private String brokerList;
   @Value("${govt.org.list.file}")
@@ -128,36 +130,30 @@ public class ThymeLeafController {
 
     aquireToken("on-demand");
 
-    Properties properties = setUpProperties(requestReportsForm);
-//    System.out.println(requestReportsForm);
+    try {
+      Properties properties = setUpProperties(requestReportsForm);
 
-    setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
+      setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
 
-    // List<VisitorEntry> visitorEntries =
-    // visitorEntryDatabaseReader.getVisitorEntries(properties);
-    // model.addAttribute("visitorEntries", visitorEntries);
+      DatabaseOrchestrator orchestrator = new DatabaseOrchestrator(properties, dateUtil, jobController);
+      vamsJdbcTemplate.query(query, new PreparedStatementSetter() {
+        public void setValues(PreparedStatement pstmt) throws SQLException {
+          pstmt.setDate(1, requestReportsForm.getStartDate());
+          pstmt.setDate(2, requestReportsForm.getEndDate());
+        }
+      }, orchestrator);
 
-    DatabaseOrchestrator orchestrator = new DatabaseOrchestrator(properties, dateUtil, jobController);
-    vamsJdbcTemplate.query(query, new PreparedStatementSetter() {
-      public void setValues(PreparedStatement pstmt) throws SQLException {
-        pstmt.setDate(1, requestReportsForm.getStartDate());
-        pstmt.setDate(2, requestReportsForm.getEndDate());
-      }
-    }, orchestrator);
+      ReportGenerationResult reportGenerationResult = orchestrator.finish();
 
-    // Orchestrator orchestrator = new Orchestrator(properties, dateUtil,
-    // jobController);
+      model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
+      model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
 
-    ReportGenerationResult reportGenerationResult = orchestrator.finish();
+      MailSenderMain mailSenderMain = new MailSenderMain();
 
-    model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
-    model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
-
-    MailSenderMain mailSenderMain = new MailSenderMain();
-
-    mailSenderMain.sendMail(properties);
-
-    releaseToken("on-demand");
+      mailSenderMain.sendMail(properties);
+    } finally {
+      releaseToken("on-demand");
+    }
     return "generateReports";
   }
 
@@ -165,43 +161,46 @@ public class ThymeLeafController {
   public String periodicAlerts(Model model) throws IOException {
 
     aquireToken("periodic");
-    setupTestData(true);
+    try {
+      setupTestData(true);
 
-    RequestReportsForm requestReportsForm = new RequestReportsForm();
-    requestReportsForm.setGenerateAllReports(true);
+      RequestReportsForm requestReportsForm = new RequestReportsForm();
+      requestReportsForm.setGenerateAllReports(true);
 
-    long today = System.currentTimeMillis();
-    long thirtyDaysBeforeToday = today - Constants.ONE_MONTH_IN_MILLISECONDS;
+      long today = System.currentTimeMillis();
+      long thirtyDaysBeforeToday = today - Constants.ONE_MONTH_IN_MILLISECONDS;
 
-    requestReportsForm.setStartDate(new Date(thirtyDaysBeforeToday));
-    requestReportsForm.setEndDate(new Date(today));
-    Properties properties = setUpProperties(requestReportsForm);
-//    System.out.println(requestReportsForm);
+      requestReportsForm.setStartDate(new Date(thirtyDaysBeforeToday));
+      requestReportsForm.setEndDate(new Date(today));
+      Properties properties = setUpProperties(requestReportsForm);
 
-    File brokerListFile = new File(brokerList);
-    File employeeWatchListFile = new File(employeeMatchList);
-    File governmentListFile = new File(governmentOrgList);
-    File visitorWatchListFile = new File(visitorList);
+      File brokerListFile = new File(brokerList);
+      File employeeWatchListFile = new File(employeeMatchList);
+      File governmentListFile = new File(governmentOrgList);
+      File visitorWatchListFile = new File(visitorList);
 
-    setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
+      setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
 
-    properties.put(Constants.PROPERTY_SERVER_TYPE, Constants.PROPERTY_SERVER_TYPE_LOCAL);
+      properties.put(Constants.PROPERTY_SERVER_TYPE, Constants.PROPERTY_SERVER_TYPE_LOCAL);
 
-    DatabaseOrchestrator orchestrator = new DatabaseOrchestrator(properties, dateUtil, jobController);
+      DatabaseOrchestrator orchestrator = new DatabaseOrchestrator(properties, dateUtil, jobController);
 
-    vamsJdbcTemplate.query(periodAlertVisitorEntriesQuery, orchestrator);
+      vamsJdbcTemplate.query(periodAlertVisitorEntriesQuery, orchestrator);
 
-    ReportGenerationResult reportGenerationResult = orchestrator.finish();
+      ReportGenerationResult reportGenerationResult = orchestrator.finish();
 
-    model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
-    model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
+      model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
+      model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
 
-    requestReportsForm.setEmailTo(mailToAddress);
+      requestReportsForm.setEmailTo(mailToAddress);
 
-    MailSenderMain mailSenderMain = new MailSenderMain();
+      MailSenderMain mailSenderMain = new MailSenderMain();
 
-    mailSenderMain.sendMail(properties);
-    releaseToken("periodic");
+      mailSenderMain.sendMail(properties);
+    } finally {
+      releaseToken("periodic");
+    }
+
     return "generateReports";
   }
 
@@ -233,6 +232,7 @@ public class ThymeLeafController {
     properties.put(Constants.PROPERTY_VAMS_DB_PASSWORD, password);
     properties.put(Constants.PROPERTY_VAMS_DB_USER, user);
     properties.put(Constants.PROPERTY_VAMS_DB_URL, url);
+    properties.put(Constants.PROPERTY_VAMS_DB_TIME_OFFSET_IN_HOURS, vamsDbTimeOffsetInHours);
 
     properties.put(Constants.PROPERTY_BROKER_LIST_FILE, brokerList);
     properties.put(Constants.PROPERTY_GOVT_ORG_LIST_FILE, governmentOrgList);

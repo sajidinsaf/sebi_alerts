@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.report.builder.ListCheckReportBuilder;
 import com.visibleai.sebi.report.builder.MediaVisitorReportBuilder;
@@ -26,6 +29,7 @@ import com.visibleai.sebi.web.controller.util.ReportSelectUtil;
 import com.visibleai.sebi.web.model.RequestReportsForm;
 
 public class ReportBuilderFactory {
+  private Logger logger = LoggerFactory.getLogger(ReportBuilderFactory.class);
   private DateUtil dateUtil;
   private VisitFrequencyCheckFactory visitFrequencyCheckFactory;
 
@@ -45,7 +49,7 @@ public class ReportBuilderFactory {
 
     List<String> reportsToGenerate = new ReportSelectUtil().getReportClassNames(reportsForm);
 
-    // System.out.println(reportsToGenerate);
+    logger.debug("Reports to generate: " + reportsToGenerate);
 
     List<ReportBuilder> reportBuilders = new ArrayList<>();
 

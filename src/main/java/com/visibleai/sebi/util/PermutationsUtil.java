@@ -13,7 +13,7 @@ import com.visibleai.sebi.model.Constants;
 
 public class PermutationsUtil {
 
-  private Logger logger = LoggerFactory.getLogger(PermutationsUtil.class);
+  private static final Logger logger = LoggerFactory.getLogger(PermutationsUtil.class);
   private DateUtil dateUtil;
   private String dateFormat;
   private PermutationsFilter permutationsFilter;
@@ -41,11 +41,10 @@ public class PermutationsUtil {
     List<String> permutations = permutationsUtil.uniquePermutationsForAllLengths(array);
 
     for (String permutation : permutations) {
-      System.out.println(permutation);
+      logger.debug(permutation);
     }
-    System.out.println("=============================");
-    System.out.println("=============================");
-    System.out.println();
+    logger.debug("=============================");
+    logger.debug("=============================");
     List<List<Date>> resultsList = permutationsUtil.getAllPermutations(Arrays.asList(array), 3);
 
     for (List<Date> result : resultsList) {

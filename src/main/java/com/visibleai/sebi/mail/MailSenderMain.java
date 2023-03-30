@@ -29,7 +29,7 @@ import com.visibleai.sebi.web.model.RequestReportsForm;
 
 public class MailSenderMain {
 
-  private final Logger logger = LoggerFactory.getLogger(MailSenderMain.class);
+  private static final Logger logger = LoggerFactory.getLogger(MailSenderMain.class);
 
   public MailSenderMain() {
     // TODO Auto-generated constructor stub
@@ -46,7 +46,7 @@ public class MailSenderMain {
 
     FileReader fileReader = new FileReader(configFilePath);
 
-    System.out.println("Reading email properties from: " + configFilePath);
+    logger.debug("Reading email properties from: " + configFilePath);
 
     properties.load(fileReader);
 

@@ -35,6 +35,7 @@ public abstract class Constants {
   public static final String PROPERTY_VAMS_DB_USER = "vams.db.user";
   public static final String PROPERTY_VAMS_DB_PASSWORD = "vams.db.password";
   public static final String PROPERTY_VAMS_DB_QUERY = "vams.db.query";
+  public static final String PROPERTY_VAMS_DB_TIME_OFFSET_IN_HOURS = "vams.db.time.offset.in.hours";
   public static final String PROPERTY_JDBC_DRIVER_CLASS = "jdbc.driver.class";
   public static final String PROPERTY_REPORT_FORM = "reports.form";
 

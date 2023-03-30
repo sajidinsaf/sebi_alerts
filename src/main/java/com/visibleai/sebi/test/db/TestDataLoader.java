@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +19,13 @@ import com.visibleai.sebi.util.DateUtil;
 
 @Component
 public class TestDataLoader {
+  private Logger logger = LoggerFactory.getLogger(TestDataLoader.class);
 
   public void loadTestData(JdbcTemplate jdbcTemplate) {
 
     try {
 
-      System.out.println("Creating in memory table for test data");
+      logger.debug("Creating in memory table for test data");
       jdbcTemplate.execute(
           "create table if not exists visitor_entry (id_proof varchar(200), location  varchar(200), division varchar(200), department varchar(200), visitor_name varchar(200), visitor_number varchar(200), access_card varchar(200), visitor_company varchar(200), to_meet varchar(200), remarks varchar(200), time_in datetime, time_out datetime, visit_duration varchar(200), logged_out varchar(200), host_l varchar(200), pass_id varchar(200), auth_by varchar(200), questions varchar(200), type_of_visitor varchar(200), assets varchar(200))");
 
@@ -37,7 +40,7 @@ public class TestDataLoader {
 //        }
 //      }
       if (count > 0) {
-        System.out.println("Test data already loaded with " + count + " records");
+        logger.debug("Test data already loaded with " + count + " records");
         return;
       }
 
@@ -54,7 +57,7 @@ public class TestDataLoader {
       // Get the list of CSV records
       List<CSVRecord> csvRecords = parser.getRecords();
 
-      System.out.println("Loading test data with " + csvRecords.size() + " records");
+      logger.debug("Loading test data with " + csvRecords.size() + " records");
 
       for (CSVRecord csvRecord : csvRecords) {
 
@@ -77,10 +80,12 @@ public class TestDataLoader {
             try {
               date = new DateUtil().parseDate(value, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);
               value = new DateUtil().asString(date, "yyyy-MM-dd HH.mm.ss");
+              System.out.println(value);
 
             } catch (Exception e) {
               date = new DateUtil().parseDate(value, "dd/MM/yy HH:mm");
               value = new DateUtil().asString(date, "yyyy-MM-dd HH.mm.ss");
+              System.out.println(value);
             }
 
           }
@@ -90,12 +95,13 @@ public class TestDataLoader {
           sb.append("'").append(value).append("'");
         }
         sb.append(")");
-        jdbcTemplate.execute(sb.toString());
+        String sql = sb.toString();
+        logger.debug("Adding test data row: " + sql);
+        jdbcTemplate.execute(sql);
       }
       bufferedReader.close();
     } catch (Exception e) {
-      System.out.println("Exception while creating test data: " + e.getMessage());
-      e.printStackTrace();
+      logger.error("Exception while creating test data: ", e);
     }
 
   }

@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.visibleai.sebi.model.Constants;
 import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.report.builder.ReportBuilder;
@@ -18,6 +21,7 @@ import com.visibleai.sebi.util.DateUtil;
 import com.visibleai.sebi.validation.util.VisitFrequencyCheckFactory;
 
 public class Orchestrator {
+  private Logger logger = LoggerFactory.getLogger(Orchestrator.class);
 
   private List<ReportBuilder> reportBuilders;
 
@@ -45,23 +49,20 @@ public class Orchestrator {
     Date endDate = null;
     List<File> reportFiles = new ArrayList<File>();
     List<File> reportsNotGenerated = new ArrayList<File>();
-    System.out.println("Generating Reports");
+    logger.debug("Generating Reports");
     // For each visitor entry do the validations
     for (int i = 0; i < visitorEntries.size(); i++) {
 
       VisitorEntry visitorEntry = visitorEntries.get(i);
       for (ReportBuilder reportBuilder : reportBuilders) {
         try {
-          System.out
-              .println("Processing visitor entry" + visitorEntry + " for report builder: " + reportBuilder.getName());
+          if (logger.isDebugEnabled()) {
+            logger.debug("Processing visitor entry" + visitorEntry + " for report builder: " + reportBuilder.getName());
+          }
           reportBuilder.build(visitorEntry);
-        } catch (RuntimeException e) {
-          e.printStackTrace();
-          System.out.println("Error while reading visitor entry: [" + visitorEntry + "] with report builder: "
-              + reportBuilder.getClass().getName() + " Exception message: " + e.getMessage());
         } catch (Exception e) {
-          System.out.println("Failed to process visitor entry " + visitorEntry + " for report builder: "
-              + reportBuilder.getName() + " Exception message: " + e.getMessage());
+          logger.error(
+              "Failed to process visitor entry " + visitorEntry + " for report builder: " + reportBuilder.getName(), e);
         }
       }
 

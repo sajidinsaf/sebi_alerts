@@ -13,8 +13,6 @@ public class MultipartFileLoader implements FileLoader {
 
   @Override
   public List<String> loadFileLines(Properties config, String configPropertyName) {
-    System.out.println(configPropertyName);
-    System.out.println(config);
     MultipartFile file = (MultipartFile) config.get(configPropertyName);
     return loadListFromFile(file);
   }

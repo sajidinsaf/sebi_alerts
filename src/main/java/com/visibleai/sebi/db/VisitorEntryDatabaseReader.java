@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -16,6 +18,7 @@ import com.visibleai.sebi.web.model.RequestReportsForm;
 
 @Component
 public class VisitorEntryDatabaseReader {
+  private Logger logger = LoggerFactory.getLogger(VisitorEntryDatabaseReader.class);
 
   @Autowired
   private JdbcTemplate vamsJdbcTemplate;
@@ -35,9 +38,9 @@ public class VisitorEntryDatabaseReader {
         pstmt.setDate(1, requestReportsForm.getStartDate());
         pstmt.setDate(2, requestReportsForm.getEndDate());
       }
-    }, new VisitorEntryRowMapper());
+    }, new VisitorEntryRowMapper(properties));
 
-    System.out.println("Queried " + visitorEntries.size() + " visitor entries");
+    logger.debug("Queried " + visitorEntries.size() + " visitor entries");
     return visitorEntries;
 
   }

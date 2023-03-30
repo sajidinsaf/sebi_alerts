@@ -3,8 +3,11 @@ package com.visibleai.sebi.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Properties;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.visibleai.sebi.model.Constants;
@@ -12,6 +15,18 @@ import com.visibleai.sebi.model.VisitorEntry;
 import com.visibleai.sebi.util.DateUtil;
 
 public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
+  private Logger logger = LoggerFactory.getLogger(VisitorEntryRowMapper.class);
+
+  private final Properties config;
+  private int timeOffsetInMills;
+
+  public VisitorEntryRowMapper(Properties config) {
+    this.config = config;
+    String dbTimeOffset = config.getProperty(Constants.PROPERTY_VAMS_DB_TIME_OFFSET_IN_HOURS, "0");
+    logger.debug("Timeoffset in hours: " + dbTimeOffset);
+    timeOffsetInMills = new Double(Double.parseDouble(dbTimeOffset) * 60 * 60 * 1000).intValue();
+    logger.debug("Timeoffset in milliseconds: " + dbTimeOffset);
+  }
 
   @Override
   public VisitorEntry mapRow(ResultSet resultset, int rowNum) throws SQLException {
@@ -29,7 +44,11 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
       String visitor_company = resultset.getString("visitor_company");
       String to_meet = resultset.getString("to_meet");
       String remarks = resultset.getString("remarks");
-      Date time_in = new Date(resultset.getDate("time_in").getTime());
+
+      Date time_in = new Date(resultset.getTimestamp("time_in").getTime());
+
+      // add time offset to cater for database timezone differences
+      time_in = addTimeOffSet(time_in);
 
       Date time_out = resultset.getDate("time_out");
 
@@ -38,6 +57,10 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
       if (time_out == null) {
         time_out = new Date(time_in.getTime() + (visit_duration * 60 * 60 * 1000));
       }
+
+      // add time offset to cater for database timezone differences
+      time_out = addTimeOffSet(time_out);
+
       String logged_out = resultset.getString("logged_out");
       String host_l = resultset.getString("host_l");
       String pass_id = resultset.getString("pass_id");
@@ -76,12 +99,13 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
       visitorEntry.setTypeOfVistor(type_of_visitor);
       visitorEntry.setAssets(assets);
     } catch (Exception e) {
-      System.out.println("Exception while creating visitor entry from database row: " + rowNum + ". Exception message: "
-          + e.getMessage());
-      e.printStackTrace();
+      logger.error("Exception while creating visitor entry from database row: " + rowNum, e);
 
     }
     return visitorEntry;
   }
 
+  private Date addTimeOffSet(Date date) {
+    return new Date(date.getTime() + timeOffsetInMills);
+  }
 }
