@@ -131,7 +131,7 @@ public class ThymeLeafController {
     aquireToken("on-demand");
 
     try {
-      Properties properties = setUpProperties(requestReportsForm);
+      Properties properties = setUpProperties(requestReportsForm, Constants.ALERT_JOB_TYPE_ONDEMAND);
 
       setFiles(properties, brokerListFile, employeeWatchListFile, governmentListFile, visitorWatchListFile);
 
@@ -139,11 +139,13 @@ public class ThymeLeafController {
       vamsJdbcTemplate.query(query, new PreparedStatementSetter() {
         public void setValues(PreparedStatement pstmt) throws SQLException {
           pstmt.setDate(1, requestReportsForm.getStartDate());
-          pstmt.setDate(2, requestReportsForm.getEndDate());
+          pstmt.setDate(2, dateUtil.endOfday(requestReportsForm.getEndDate())); // set the date to the end of the day
         }
       }, orchestrator);
 
       ReportGenerationResult reportGenerationResult = orchestrator.finish();
+
+      properties.put(Constants.OBJECT_KEY_REPORT_GENERATION_RESULT, reportGenerationResult);
 
       model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
       model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
@@ -172,7 +174,7 @@ public class ThymeLeafController {
 
       requestReportsForm.setStartDate(new Date(thirtyDaysBeforeToday));
       requestReportsForm.setEndDate(new Date(today));
-      Properties properties = setUpProperties(requestReportsForm);
+      Properties properties = setUpProperties(requestReportsForm, Constants.ALERT_JOB_TYPE_PERIODIC);
 
       File brokerListFile = new File(brokerList);
       File employeeWatchListFile = new File(employeeMatchList);
@@ -188,6 +190,8 @@ public class ThymeLeafController {
       vamsJdbcTemplate.query(periodAlertVisitorEntriesQuery, orchestrator);
 
       ReportGenerationResult reportGenerationResult = orchestrator.finish();
+
+      properties.put(Constants.OBJECT_KEY_REPORT_GENERATION_RESULT, reportGenerationResult);
 
       model.addAttribute("reportFiles", reportGenerationResult.getGeneratedReports());
       model.addAttribute("reportsNotGenerated", reportGenerationResult.getFailedReports());
@@ -225,8 +229,9 @@ public class ThymeLeafController {
 
   }
 
-  private Properties setUpProperties(RequestReportsForm requestReportsForm) {
+  private Properties setUpProperties(RequestReportsForm requestReportsForm, String alertJobType) {
     Properties properties = new Properties();
+    properties.put(Constants.ALERT_JOB_TYPE, alertJobType);
     properties.put(Constants.PROPERTY_VAMS_DB_QUERY, query);
     properties.put(Constants.PROPERTY_JDBC_DRIVER_CLASS, driver);
     properties.put(Constants.PROPERTY_VAMS_DB_PASSWORD, password);

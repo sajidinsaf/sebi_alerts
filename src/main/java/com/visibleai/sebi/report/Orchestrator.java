@@ -48,6 +48,7 @@ public class Orchestrator {
     Date startDate = new Date();
     Date endDate = null;
     List<File> reportFiles = new ArrayList<File>();
+    List<File> reportsWithData = new ArrayList<File>();
     List<File> reportsNotGenerated = new ArrayList<File>();
     logger.debug("Generating Reports");
     // For each visitor entry do the validations
@@ -90,13 +91,18 @@ public class Orchestrator {
           printStream.close();
 
           reportFiles.add(reportFile);
+
+          if (report.getReportData().getRows().size() > 0) {
+            reportsWithData.add(reportFile);
+          }
         } catch (Exception e) {
           reportsNotGenerated.add(reportFile);
         }
       }
     }
 
-    ReportGenerationResult reportGenerationResult = new ReportGenerationResult(reportFiles, reportsNotGenerated);
+    ReportGenerationResult reportGenerationResult = new ReportGenerationResult(reportFiles, reportsNotGenerated,
+        reportsWithData);
     return reportGenerationResult;
   }
 

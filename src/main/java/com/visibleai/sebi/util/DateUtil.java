@@ -9,6 +9,8 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.visibleai.sebi.model.Constants;
+
 @Component
 public class DateUtil {
 
@@ -62,5 +64,10 @@ public class DateUtil {
 
   public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
     return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+  }
+
+  public java.sql.Date endOfday(java.sql.Date endDate) {
+    Date startOfDay = parseDate(asString(endDate, Constants.DATE_ONLY_FORMAT), Constants.DATE_ONLY_FORMAT);
+    return new java.sql.Date(startOfDay.getTime() + Constants.ONE_DAY_IN_MILLISECONDS);
   }
 }

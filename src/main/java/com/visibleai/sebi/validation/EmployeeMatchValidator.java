@@ -6,13 +6,13 @@ import com.visibleai.sebi.model.VisitorEntry;
 
 public class EmployeeMatchValidator extends ListCheckValidator {
 
-    public EmployeeMatchValidator(List<String> checkList) {
-        super(checkList);
-    }
+  public EmployeeMatchValidator(List<String> checkList) {
+    super(checkList);
+  }
 
-    @Override
-    protected String getValueToCheck(VisitorEntry visitorEntry) {
-        return visitorEntry.getToMeet();
-    }
+  @Override
+  protected String getValueToCheck(VisitorEntry visitorEntry) {
+    return visitorEntry.getToMeetUsername();
+  }
 
 }

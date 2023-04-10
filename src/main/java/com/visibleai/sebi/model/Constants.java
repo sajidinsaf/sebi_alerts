@@ -9,6 +9,7 @@ public abstract class Constants {
   public static final String DEFAULT_VISITOR_ENTRY_SOURCE = VISITOR_ENTRY_SOURCE_FILE;
 
   public static final String DEFAULT_VISITOR_ENTRY_DATE_FORMAT = "dd MMM yyyy hh:mma";
+  public static final String DATE_ONLY_FORMAT = "dd MMM yyyy";
   public static final String JOB_ID_DEFAULT_DATE_FORMAT = "yyyyMMddHHmmss";
 
   public static final String BROKERS_LIST_FILE = Constants.class.getClassLoader().getResource("BrokerList.txt")
@@ -55,6 +56,11 @@ public abstract class Constants {
   public static final String PROPERTY_SERVER_TYPE_WEB = "web";
   public static final String PROPERTY_SERVER_TYPE_LOCAL = "standalone";
 
+  public static final long ONE_DAY_IN_MILLISECONDS = 86400000l;
   public static final long ONE_MONTH_IN_MILLISECONDS = 2592000000l;
 
+  public static final String OBJECT_KEY_REPORT_GENERATION_RESULT = "report.generation.result";
+  public static String ALERT_JOB_TYPE = "alert.job.type";
+  public static String ALERT_JOB_TYPE_ONDEMAND = "ondemand";
+  public static String ALERT_JOB_TYPE_PERIODIC = "periodic";
 }

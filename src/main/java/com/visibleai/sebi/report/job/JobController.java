@@ -12,7 +12,8 @@ import com.visibleai.sebi.util.DateUtil;
 public class JobController {
 
   public String getId(Properties config) {
-    return new DateUtil().asString(new Date(), Constants.JOB_ID_DEFAULT_DATE_FORMAT);
+    String jobType = config.getProperty(Constants.ALERT_JOB_TYPE);
+    return jobType + "_" + (new DateUtil().asString(new Date(), Constants.JOB_ID_DEFAULT_DATE_FORMAT));
   }
 
 }

@@ -15,8 +15,10 @@ public class JobControllerTest {
   @Test
   public void jobIdIsCreatedFromDateUtils() {
 
-    assertEquals(new DateUtil().asString(new Date(), Constants.JOB_ID_DEFAULT_DATE_FORMAT).substring(0, 8),
-        new JobController().getId(new Properties()).substring(0, 8));
+    Properties config = new Properties();
+    config.put(Constants.ALERT_JOB_TYPE, "test");
+    assertEquals("test_" + (new DateUtil().asString(new Date(), Constants.JOB_ID_DEFAULT_DATE_FORMAT).substring(0, 8)),
+        new JobController().getId(config).substring(0, 13));
 
   }
 

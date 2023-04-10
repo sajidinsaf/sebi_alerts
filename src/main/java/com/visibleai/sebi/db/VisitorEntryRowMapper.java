@@ -43,6 +43,7 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
       String access_card = resultset.getString("access_card");
       String visitor_company = resultset.getString("visitor_company");
       String to_meet = resultset.getString("to_meet");
+      String to_meetUsername = resultset.getString("username");
       String remarks = resultset.getString("remarks");
 
       Date time_in = new Date(resultset.getTimestamp("time_in").getTime());
@@ -50,12 +51,16 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
       // add time offset to cater for database timezone differences
       time_in = addTimeOffSet(time_in);
 
-      Date time_out = resultset.getDate("time_out");
+      Date time_out = resultset.getTimestamp("time_out") == null ? null
+          : new Date(resultset.getTimestamp("time_out").getTime());
 
-      int visit_duration = new Random().nextInt(5) + 1;
+      String visitDurationStr = resultset.getString("visit_duration");
+
+      int visit_duration = visitDurationStr != null ? Integer.parseInt(visitDurationStr) * 60 * 1000
+          : (new Random().nextInt(5) + 1) * 60 * 1000;
 
       if (time_out == null) {
-        time_out = new Date(time_in.getTime() + (visit_duration * 60 * 60 * 1000));
+        time_out = new Date(time_in.getTime() + (visit_duration));
       }
 
       // add time offset to cater for database timezone differences
@@ -78,6 +83,8 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
       visitorEntry.setAccessCardId(access_card);
       visitorEntry.setVisitorCompany(visitor_company);
       visitorEntry.setToMeet(to_meet);
+      visitorEntry.setToMeetUsername(to_meetUsername);
+
       visitorEntry.setRemarks(remarks);
 
       String timeInString = new DateUtil().asString(time_in, Constants.DEFAULT_VISITOR_ENTRY_DATE_FORMAT);

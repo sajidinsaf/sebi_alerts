@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.util.List;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.visibleai.sebi.model.Constants;
+import com.visibleai.sebi.report.ReportGenerationResult;
 import com.visibleai.sebi.web.model.RequestReportsForm;
 
 public class MailSenderMain {
@@ -59,6 +61,11 @@ public class MailSenderMain {
 
     logger.debug("Creating reports zip file");
     File reportFile = zip(config);
+    if (reportFile == null) {
+      String jobId = config.getProperty(Constants.PROPERTY_REPORT_JOB_ID);
+      logger.info("No reports with data were created for job id: " + jobId + ". No email will be sent");
+      return;
+    }
     logger.debug("Created reports zip file: " + reportFile.getAbsolutePath());
 
     String host = config.getProperty(Constants.PROPERTY_MAIL_SMTP_SERVER);
@@ -138,8 +145,16 @@ public class MailSenderMain {
   private File zip(Properties config) {
 
     try {
-      String reportsBaseDirectory = config.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
       String jobId = config.getProperty(Constants.PROPERTY_REPORT_JOB_ID);
+      ReportGenerationResult reportGenerationResult = (ReportGenerationResult) config
+          .get(Constants.OBJECT_KEY_REPORT_GENERATION_RESULT);
+      List<File> reportsWithData = (List<File>) reportGenerationResult.getGeneratedReportsWithData();
+
+      if (reportsWithData.size() == 0) {
+        logger.info("No reports with data for job: " + jobId + ". Mail will not be sent.");
+        return null;
+      }
+      String reportsBaseDirectory = config.getProperty(Constants.PROPERTY_REPORT_OUTPUT_FILE_PATH);
 
       File reportsDirectory = new File(reportsBaseDirectory + System.getProperty("file.separator") + jobId);
 
@@ -150,6 +165,17 @@ public class MailSenderMain {
 
       for (File reportFile : reportsDirectory.listFiles()) {
         if (!reportFile.getName().endsWith(".csv")) {
+          continue;
+        }
+
+        boolean reportHasData = false;
+        for (File reportWithData : reportsWithData) {
+          if (reportWithData.getAbsolutePath().equals(reportFile.getAbsolutePath())) {
+            reportHasData = true;
+            break;
+          }
+        }
+        if (!reportHasData) {
           continue;
         }
 

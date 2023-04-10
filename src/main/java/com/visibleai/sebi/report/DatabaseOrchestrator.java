@@ -87,6 +87,7 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
   public ReportGenerationResult finish() {
 
     List<File> reportFiles = new ArrayList<File>();
+    List<File> reportsWithData = new ArrayList<File>();
     List<File> reportsNotGenerated = new ArrayList<File>();
     String reportDir = properties.getProperty(Constants.PROPERTY_REPORT_JOB_DIR);
     ReportPrinter reportPrinter = new SebiAlertsReportPrinter(startDate, endDate, dateUtil);
@@ -106,6 +107,9 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
           printStream.close();
 
           reportFiles.add(reportFile);
+          if (reportDir.startsWith(Constants.ALERT_JOB_TYPE_ONDEMAND) || report.getReportData().getRows().size() > 0) {
+            reportsWithData.add(reportFile);
+          }
 
         } catch (Exception e) {
           reportsNotGenerated.add(reportFile);
@@ -113,7 +117,8 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
       }
     }
 
-    ReportGenerationResult reportGenerationResult = new ReportGenerationResult(reportFiles, reportsNotGenerated);
+    ReportGenerationResult reportGenerationResult = new ReportGenerationResult(reportFiles, reportsNotGenerated,
+        reportsWithData);
     rowNum = 0;
     return reportGenerationResult;
   }
