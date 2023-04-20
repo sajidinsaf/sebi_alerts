@@ -1,5 +1,6 @@
 package com.visibleai.sebi.util;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -66,8 +67,12 @@ public class DateUtil {
     return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
   }
 
-  public java.sql.Date endOfday(java.sql.Date endDate) {
+  public Timestamp endOfday(java.sql.Date endDate) {
     Date startOfDay = parseDate(asString(endDate, Constants.DATE_ONLY_FORMAT), Constants.DATE_ONLY_FORMAT);
-    return new java.sql.Date(startOfDay.getTime() + Constants.ONE_DAY_IN_MILLISECONDS);
+    return new Timestamp(startOfDay.getTime() + Constants.ONE_DAY_IN_MILLISECONDS);
+  }
+
+  public Timestamp toTimeStamp(Date date) {
+    return new Timestamp(date.getTime());
   }
 }

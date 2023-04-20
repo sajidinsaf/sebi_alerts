@@ -56,7 +56,8 @@ public class VisitorEntryRowMapper implements RowMapper<VisitorEntry> {
 
       String visitDurationStr = resultset.getString("visit_duration");
 
-      int visit_duration = visitDurationStr != null ? Integer.parseInt(visitDurationStr) * 60 * 1000
+      int visit_duration = visitDurationStr != null && !visitDurationStr.endsWith("")
+          ? Integer.parseInt(visitDurationStr) * 60 * 1000
           : (new Random().nextInt(5) + 1) * 60 * 1000;
 
       if (time_out == null) {

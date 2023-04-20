@@ -141,6 +141,9 @@ public class DatabaseOrchestrator implements RowCallbackHandler {
   @Override
   public void processRow(ResultSet rs) throws SQLException {
     VisitorEntry visitorEntry = visitorEntryRowMapper.mapRow(rs, ++rowNum);
+    if (visitorEntry.getTimeIn().startsWith("10 Oct 2022")) {
+      System.out.println(visitorEntry);
+    }
     // logger.trace("Processing row number: " + rowNum);
     buildReports(visitorEntry);
   }

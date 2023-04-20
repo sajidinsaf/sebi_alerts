@@ -27,7 +27,7 @@ public class TestDataLoader {
 
       logger.debug("Creating in memory table for test data");
       jdbcTemplate.execute(
-          "create table if not exists visitor_entry (id_proof varchar(200), location  varchar(200), division varchar(200), department varchar(200), visitor_name varchar(200), visitor_number varchar(200), access_card varchar(200), visitor_company varchar(200), to_meet varchar(200), remarks varchar(200), time_in datetime, time_out datetime, visit_duration varchar(200), logged_out varchar(200), host_l varchar(200), pass_id varchar(200), auth_by varchar(200), questions varchar(200), type_of_visitor varchar(200), assets varchar(200))");
+          "create table if not exists visitor_entry (id_proof varchar(200), location  varchar(200), division varchar(200), department varchar(200), visitor_name varchar(200), visitor_number varchar(20),username varchar(20), access_card varchar(200), visitor_company varchar(200), to_meet varchar(200), remarks varchar(200), time_in datetime, time_out datetime, visit_duration varchar(200), logged_out varchar(200), host_l varchar(200), pass_id varchar(200), auth_by varchar(200), questions varchar(200), type_of_visitor varchar(200), assets varchar(200))");
 
       int count = 0;
       // try {
@@ -48,7 +48,7 @@ public class TestDataLoader {
 
       BufferedReader bufferedReader = new BufferedReader(new FileReader(sampleDataFile));
 
-      String insertQuery = "insert into visitor_entry (id_proof, location, division, department,visitor_name,visitor_number, access_card, visitor_company, to_meet, remarks, time_in, time_out, visit_duration, logged_out, host_l, pass_id, auth_by, questions, type_of_visitor, assets) values (";
+      String insertQuery = "insert into visitor_entry (id_proof, location, division, department,visitor_name,visitor_number, username, access_card, visitor_company, to_meet, remarks, time_in, time_out, visit_duration, logged_out, host_l, pass_id, auth_by, questions, type_of_visitor, assets) values (";
 
       // bufferedReader.readLine();
       // Parse the file using the apache CSV library
@@ -62,17 +62,17 @@ public class TestDataLoader {
       for (CSVRecord csvRecord : csvRecords) {
 
         StringBuilder sb = new StringBuilder(insertQuery);
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 21; i++) {
           if (!sb.toString().endsWith("(")) {
             sb.append(",");
           }
           String value = csvRecord.get(i);
 
           // end_time is not filled into many columns
-          if (i == 11 && value.trim().equals("")) {
-            value = csvRecord.get(10);
+          if (i == 12 && value.trim().equals("")) {
+            value = csvRecord.get(11);
           }
-          if ((i == 10 || i == 11) && !value.trim().equals("")) {
+          if ((i == 11 || i == 12) && !value.trim().equals("")) {
 //            if (!value.toUpperCase().endsWith("AM") && !value.toUpperCase().endsWith("PM")) {
 //              value += "PM";
 //            }

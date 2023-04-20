@@ -138,8 +138,9 @@ public class ThymeLeafController {
       DatabaseOrchestrator orchestrator = new DatabaseOrchestrator(properties, dateUtil, jobController);
       vamsJdbcTemplate.query(query, new PreparedStatementSetter() {
         public void setValues(PreparedStatement pstmt) throws SQLException {
-          pstmt.setDate(1, requestReportsForm.getStartDate());
-          pstmt.setDate(2, dateUtil.endOfday(requestReportsForm.getEndDate())); // set the date to the end of the day
+          pstmt.setTimestamp(1, dateUtil.toTimeStamp(requestReportsForm.getStartDate()));
+          pstmt.setTimestamp(2, dateUtil.endOfday(requestReportsForm.getEndDate())); // set the date to the end of the
+                                                                                     // day
         }
       }, orchestrator);
 
