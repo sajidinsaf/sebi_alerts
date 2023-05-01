@@ -16,27 +16,27 @@ import com.visibleai.sebi.validation.util.VisitFrequencyCheck;
 
 public class VisitFrequencyReportBuilder {
 
-  private Logger logger = LoggerFactory.getLogger(VisitFrequencyReportBuilder.class);
+    private Logger logger = LoggerFactory.getLogger(VisitFrequencyReportBuilder.class);
 
-  private SebiAlertsReport visitFrequencyReport = null;
-  private VisitFrequencyCheck visitFrequencyCheck;
-  private Map<String, List<FrequentVisitorDetail>> visitFrequencyCheckMap;
-  private int frequencyViolationNumber;
-  private int numberOfDays;
+    private SebiAlertsReport visitFrequencyReport = null;
+    private VisitFrequencyCheck visitFrequencyCheck;
+    private Map<String, List<FrequentVisitorDetail>> visitFrequencyCheckMap;
+    private int frequencyViolationNumber;
+    private int numberOfDays;
 
-  public VisitFrequencyReportBuilder(int numberOfDays, int frequencyViolationNumber, String reportName,
-      VisitFrequencyCheck visitFrequencyCheck) {
+    public VisitFrequencyReportBuilder(int numberOfDays, int frequencyViolationNumber, String reportName,
+            VisitFrequencyCheck visitFrequencyCheck) {
 
-    this.visitFrequencyCheck = visitFrequencyCheck;
+        this.visitFrequencyCheck = visitFrequencyCheck;
 
-    visitFrequencyReport = new SebiAlertsReport();
-    visitFrequencyReport.setFileName(reportName);
-    visitFrequencyReport.setTitle(numberOfDays + " Day Check Report");
-    visitFrequencyReport.setDate(new Date());
-    this.frequencyViolationNumber = frequencyViolationNumber;
-    this.numberOfDays = numberOfDays;
+        visitFrequencyReport = new SebiAlertsReport();
+        visitFrequencyReport.setFileName(reportName);
+        visitFrequencyReport.setTitle(numberOfDays + " Day Check Report");
+        visitFrequencyReport.setDate(new Date());
+        this.frequencyViolationNumber = frequencyViolationNumber;
+        this.numberOfDays = numberOfDays;
 
-  }
+    }
 //
 //  public void build(FrequentVisitorDetail frequentVisitorDetail) {
 //
@@ -47,68 +47,70 @@ public class VisitFrequencyReportBuilder {
 //
 //  }
 
-  public List<Report> getReports() {
+    public List<Report> getReports() {
 
-    logger.debug("Building report for " + numberOfDays + " days frequency check");
+        logger.debug("Building report for " + numberOfDays + " days frequency check");
 
-    TableReportData visitFrequencyReportData = new TableReportData();
+        TableReportData visitFrequencyReportData = new TableReportData();
 
-    List<String> header = Arrays.asList("Phone Number", "Name", "Meeting with", "Date(Time In)", "Date(Time Out)",
-        "Visitors Company", "Type Of Visitor", "Number of Visits", "Visit Period", "Comments");
-    visitFrequencyReportData.setHeader(header);
+        List<String> header = Arrays.asList("Phone Number", "Name", "Meeting with", "Date(Time In)", "Date(Time Out)",
+                "Visitors Company", "Type Of Visitor", "Number of Visits", "Visit Period", "Comments", "Location");
+        visitFrequencyReportData.setHeader(header);
 
-    logger.debug("Created report header");
+        logger.debug("Created report header");
 
-    for (String phoneNumber : visitFrequencyCheckMap.keySet()) {
-      List<FrequentVisitorDetail> frequentVisitorDetailList = visitFrequencyCheckMap.get(phoneNumber);
-      if (frequentVisitorDetailList.size() < frequencyViolationNumber) {
-        continue;
-      }
+        for (String phoneNumber : visitFrequencyCheckMap.keySet()) {
+            List<FrequentVisitorDetail> frequentVisitorDetailList = visitFrequencyCheckMap.get(phoneNumber);
+            if (frequentVisitorDetailList.size() < frequencyViolationNumber) {
+                continue;
+            }
 
-      List<List<FrequentVisitorDetail>> frequentVisitsLists = visitFrequencyCheck.check(frequentVisitorDetailList);
+            List<List<FrequentVisitorDetail>> frequentVisitsLists = visitFrequencyCheck
+                    .check(frequentVisitorDetailList);
 
-      for (List<FrequentVisitorDetail> frequentVisitsList : frequentVisitsLists) {
-        // "Phone Number", "Name", "Meeting with", "Date", "Visitors Company", "Type Of
-        // Visitor", "Comments"
-        // "Phone Number", "Name1|Name2|Name3 ", "Meeting with1|Meeting With2|Meeting
-        // With3", "Date1|Date2|Date3", "Visitors Company1|Visitors Company2|Visitors
-        // Company3", "Type Of Visitor1|Type Of Visitor2|Type Of Visitor3", "Comments"
+            for (List<FrequentVisitorDetail> frequentVisitsList : frequentVisitsLists) {
+                // "Phone Number", "Name", "Meeting with", "Date", "Visitors Company", "Type Of
+                // Visitor", "Comments"
+                // "Phone Number", "Name1|Name2|Name3 ", "Meeting with1|Meeting With2|Meeting
+                // With3", "Date1|Date2|Date3", "Visitors Company1|Visitors Company2|Visitors
+                // Company3", "Type Of Visitor1|Type Of Visitor2|Type Of Visitor3", "Comments"
 
-        String frequencyCount = frequentVisitsList.size() + "";
-        String comments = "";
-        String visitFromTo = frequentVisitsList.get(0).getTimeIn() + " - "
-            + frequentVisitsList.get(frequentVisitsList.size() - 1).getTimeIn();
+                String frequencyCount = frequentVisitsList.size() + "";
+                String comments = "";
+                String visitFromTo = frequentVisitsList.get(0).getTimeIn() + " - "
+                        + frequentVisitsList.get(frequentVisitsList.size() - 1).getTimeIn();
 
-        for (FrequentVisitorDetail frequentVisitorDetail : frequentVisitsList) {
-          String names = frequentVisitorDetail.getVisitorName();
-          String meetingsWith = frequentVisitorDetail.getToMeet();
-          String visitDatesIn = frequentVisitorDetail.getTimeIn();
-          String visitDatesOut = frequentVisitorDetail.getTimeOut();
-          String visitorCompanies = frequentVisitorDetail.getVisitorCompany();
-          String typeOfVisitor = frequentVisitorDetail.getAccessCardId();
+                for (FrequentVisitorDetail frequentVisitorDetail : frequentVisitsList) {
+                    String names = frequentVisitorDetail.getVisitorName();
+                    String meetingsWith = frequentVisitorDetail.getToMeet();
+                    String visitDatesIn = frequentVisitorDetail.getTimeIn();
+                    String visitDatesOut = frequentVisitorDetail.getTimeOut();
+                    String visitorCompanies = frequentVisitorDetail.getVisitorCompany();
+                    String typeOfVisitor = frequentVisitorDetail.getAccessCardId();
+                    String location = frequentVisitorDetail.getLocation();
 
-          List<String> row = Arrays.asList(phoneNumber, names, meetingsWith, visitDatesIn, visitDatesOut,
-              visitorCompanies, typeOfVisitor, frequencyCount, visitFromTo, comments);
-          logger.debug("Created report row for " + numberOfDays + " days frequency check: " + row);
+                    List<String> row = Arrays.asList(phoneNumber, names, meetingsWith, visitDatesIn, visitDatesOut,
+                            visitorCompanies, typeOfVisitor, frequencyCount, visitFromTo, comments, location);
+                    logger.debug("Created report row for " + numberOfDays + " days frequency check: " + row);
 
-          visitFrequencyReportData.addRow(row);
-          frequencyCount = "";
-          visitFromTo = "";
+                    visitFrequencyReportData.addRow(row);
+                    frequencyCount = "";
+                    visitFromTo = "";
+                }
+
+            }
+
         }
-
-      }
+        visitFrequencyReport.setReportData(visitFrequencyReportData);
+        return Arrays.asList(visitFrequencyReport);
 
     }
-    visitFrequencyReport.setReportData(visitFrequencyReportData);
-    return Arrays.asList(visitFrequencyReport);
 
-  }
+    public String getName() {
+        return "VisitFrequencyReportBuilder_" + numberOfDays + "days";
+    }
 
-  public String getName() {
-    return "VisitFrequencyReportBuilder_" + numberOfDays + "days";
-  }
-
-  public void setVisitFrequencyCheckMap(Map<String, List<FrequentVisitorDetail>> visitFrequencyCheckMap) {
-    this.visitFrequencyCheckMap = visitFrequencyCheckMap;
-  }
+    public void setVisitFrequencyCheckMap(Map<String, List<FrequentVisitorDetail>> visitFrequencyCheckMap) {
+        this.visitFrequencyCheckMap = visitFrequencyCheckMap;
+    }
 }
